@@ -1505,49 +1505,64 @@ with tab_news:
     def fetch_portfolio_news(ticker_list):
         """Fetch news for each ticker, filter to significant articles."""
         import yfinance as yf
-        from datetime import datetime, timezone
+        from datetime import datetime, timezone, timedelta
         all_articles = []
         seen_titles = set()
+        cutoff = datetime.now(tz=timezone.utc) - timedelta(days=14)
 
         for ticker_symbol in ticker_list:
             try:
                 t = yf.Ticker(ticker_symbol)
                 news_items = t.news or []
                 for item in news_items:
-                    title = item.get("title", "")
-                    # Skip duplicates
-                    if title in seen_titles or not title:
+                    # yfinance wraps data inside a 'content' dict
+                    content = item.get("content", item)
+
+                    title = content.get("title", "")
+                    if not title or title in seen_titles:
                         continue
 
-                    # Extract fields
-                    link = item.get("link", "")
-                    publisher = item.get("publisher", "Unknown")
-                    pub_time = item.get("providerPublishTime", 0)
+                    summary = content.get("summary", "")
+
+                    # Link: try canonical or clickThrough url
+                    link = ""
+                    canonical = content.get("canonicalUrl") or {}
+                    click_through = content.get("clickThroughUrl") or {}
+                    link = canonical.get("url", "") or click_through.get("url", "")
+
+                    # Publisher
+                    provider = content.get("provider") or {}
+                    publisher = provider.get("displayName", "Unknown")
+
+                    # Published date (ISO string)
+                    pub_date_str = content.get("pubDate", "")
+                    try:
+                        pub_dt = datetime.fromisoformat(pub_date_str.replace("Z", "+00:00"))
+                    except Exception:
+                        pub_dt = datetime.now(tz=timezone.utc)
+
+                    # Skip articles older than 14 days
+                    if pub_dt < cutoff:
+                        continue
+
+                    # Thumbnail
                     thumbnail = ""
-                    thumb_data = item.get("thumbnail", {})
+                    thumb_data = content.get("thumbnail") or {}
                     if isinstance(thumb_data, dict):
                         resolutions = thumb_data.get("resolutions", [])
                         if resolutions:
-                            thumbnail = resolutions[-1].get("url", "")
-
-                    # Build related tickers list
-                    related = item.get("relatedTickers", [])
-
-                    # Convert timestamp
-                    try:
-                        pub_dt = datetime.fromtimestamp(pub_time, tz=timezone.utc)
-                    except Exception:
-                        pub_dt = datetime.now(tz=timezone.utc)
+                            # Pick the smallest that's still reasonable
+                            thumbnail = resolutions[0].get("url", "")
 
                     seen_titles.add(title)
                     all_articles.append({
                         "title": title,
+                        "summary": summary,
                         "link": link,
                         "publisher": publisher,
                         "published": pub_dt,
                         "thumbnail": thumbnail,
                         "source_ticker": ticker_symbol,
-                        "related": related,
                     })
             except Exception:
                 continue
@@ -1611,11 +1626,12 @@ with tab_news:
                          onmouseover="this.style.borderColor='rgba(129,140,248,0.3)'; this.style.background='rgba(30,41,59,0.85)';"
                          onmouseout="this.style.borderColor='rgba(148,163,184,0.08)'; this.style.background='rgba(30,41,59,0.65)';">
                         <div style='flex: 1; min-width: 0;'>
-                            <p style='color: #f1f5f9 !important; font-size: 15px; font-weight: 600; margin: 0 0 8px 0;
+                            <p style='color: #f1f5f9 !important; font-size: 15px; font-weight: 600; margin: 0 0 6px 0;
                                       line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2;
                                       -webkit-box-orient: vertical; overflow: hidden;'>
                                 {article['title']}
                             </p>
+                            {"<p style='color: #94a3b8 !important; font-size: 13px; margin: 0 0 8px 0; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;'>" + article['summary'] + "</p>" if article.get('summary') else ""}
                             <div style='display: flex; align-items: center; gap: 10px; flex-wrap: wrap;'>
                                 {badge}
                                 <span style='color: #64748b !important; font-size: 12px;'>{article['publisher']}</span>
