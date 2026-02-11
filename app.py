@@ -1585,11 +1585,12 @@ with tab_news:
         """, unsafe_allow_html=True)
     else:
         # Sort control and article count
-        sort_col1, sort_col2 = st.columns([3, 1])
+        sort_col1, sort_col2 = st.columns([1, 3])
         with sort_col1:
-            st.markdown(f"<p style='color: #64748b !important; font-size: 13px; margin-top: 8px;'>{len(news_articles)} article{'s' if len(news_articles) != 1 else ''} found</p>", unsafe_allow_html=True)
-        with sort_col2:
+            st.markdown("<p style='color: #94a3b8 !important; font-size: 12px; font-weight: 600; margin: 0 0 4px 0; letter-spacing: .3px;'>Sort By:</p>", unsafe_allow_html=True)
             news_sort = st.selectbox("Sort by", ["Most Recent", "Ticker"], key="news_sort", label_visibility="collapsed")
+        with sort_col2:
+            st.markdown(f"<p style='color: #64748b !important; font-size: 13px; margin-top: 24px; text-align: right;'>{len(news_articles)} article{'s' if len(news_articles) != 1 else ''} found</p>", unsafe_allow_html=True)
 
         # Apply sorting
         if news_sort == "Ticker":
