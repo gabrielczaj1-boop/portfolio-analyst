@@ -773,8 +773,8 @@ with tab1:
     n_days = len(portfolio_returns)
 
     # Inline-style snippets used inside every formula overlay
-    S_LATEX = ("background:rgba(255,255,255,.06);padding:10px 14px;"
-               "border-radius:6px;margin:0 0 12px 0;display:block;text-align:center;")
+    from styles import math_frac, math_formula, m, mop
+
     S_ROW = "display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.06);"
     S_VAR = "color:#c4b5fd !important;font-weight:500;"
     S_NUM = "color:#fff !important;font-weight:600;font-family:'SF Mono','Fira Code',Consolas,monospace;"
@@ -783,9 +783,6 @@ with tab1:
     S_RES_VAR = "color:#a5b4fc !important;font-weight:600;"
     S_RES_NUM = "color:#34d399 !important;font-weight:700;font-size:14px;font-family:'SF Mono','Fira Code',Consolas,monospace;"
     S_NOTE = "font-size:11px;color:#94a3b8 !important;margin:8px 0 0 0;"
-
-    def _latex(tex):
-        return f"<div style='{S_LATEX}'><span class='fc-latex' data-formula='{tex}'></span></div>"
 
     def _row(label, val):
         return f"<div style='{S_ROW}'><span style='{S_VAR}'>{label}</span><span style='{S_NUM}'>{val}</span></div>"
@@ -807,8 +804,8 @@ with tab1:
         else:
             st.markdown(_fc(
                 "Annualized Return", f"{ann_return*100:.2f}%",
-                _latex(r"R_{ann} = (1 + R_{total})^{\frac{252}{N}} - 1")
-                + _row("R_total", f"{total_ret_raw:+.4f}")
+                math_formula(m("R"), mop("="), m("(1 + R"), m("<sub>total</sub>"), m(")"), mop(""), math_frac("252", "N"), mop("&minus; 1"))
+                + _row("R<sub>total</sub>", f"{total_ret_raw:+.4f}")
                 + _row("N (trading days)", f"{n_days}")
                 + f"<hr style='{S_DIV}'>"
                 + _result("= Annualized Return", f"{ann_return*100:+.2f}%")
@@ -826,9 +823,9 @@ with tab1:
     with col3:
         st.markdown(_fc(
             "Portfolio Beta", f"{beta:.2f}",
-            _latex(r"\beta = \frac{\mathrm{Cov}(R_p,\, R_b)}{\mathrm{Var}(R_b)}")
-            + _row("Cov(Rp, Rb)", f"{cov_pb:.6f}")
-            + _row("Var(Rb)", f"{var_b:.6f}")
+            math_formula(m("&beta;"), mop("="), math_frac("Cov(R<sub>p</sub>, R<sub>b</sub>)", "Var(R<sub>b</sub>)"))
+            + _row("Cov(R<sub>p</sub>, R<sub>b</sub>)", f"{cov_pb:.6f}")
+            + _row("Var(R<sub>b</sub>)", f"{var_b:.6f}")
             + f"<hr style='{S_DIV}'>"
             + _result("= Beta", f"{beta:.4f}")
             + f"<p style='{S_NOTE}'>{history_start_date} &rarr; {history_end_date}</p>"
@@ -848,8 +845,8 @@ with tab1:
     with col1:
         st.markdown(_fc(
             "Volatility", f"{ann_vol*100:.2f}%",
-            _latex(r"\sigma_{ann} = \sigma_{daily} \times \sqrt{252}")
-            + _row("&sigma; daily", f"{daily_std:.6f}")
+            math_formula(m("&sigma;<sub>ann</sub>"), mop("="), m("&sigma;<sub>daily</sub>"), mop("&times;"), m("&radic;252"))
+            + _row("&sigma;<sub>daily</sub>", f"{daily_std:.6f}")
             + _row("&radic;252", f"{np.sqrt(252):.4f}")
             + f"<hr style='{S_DIV}'>"
             + _result("= Annualized Vol", f"{ann_vol*100:.2f}%")
@@ -859,10 +856,10 @@ with tab1:
     with col2:
         st.markdown(_fc(
             "Sharpe Ratio", f"{sharpe:.2f}",
-            _latex(r"S = \frac{E[R_p] - R_f}{\sigma_p}")
-            + _row("E[Rp] (annualized)", f"{sharpe_numerator:.4f}")
-            + _row("Rf (annual)", f"{rf_annual:.2%}")
-            + _row("&sigma;p (annualized)", f"{sharpe_denominator:.4f}")
+            math_formula(m("S"), mop("="), math_frac("E[R<sub>p</sub>] &minus; R<sub>f</sub>", "&sigma;<sub>p</sub>"))
+            + _row("E[R<sub>p</sub>] (annualized)", f"{sharpe_numerator:.4f}")
+            + _row("R<sub>f</sub> (annual)", f"{rf_annual:.2%}")
+            + _row("&sigma;<sub>p</sub> (annualized)", f"{sharpe_denominator:.4f}")
             + f"<hr style='{S_DIV}'>"
             + _result("= Sharpe Ratio", f"{sharpe:.4f}")
             + f"<p style='{S_NOTE}'>{history_start_date} &rarr; {history_end_date}</p>"
@@ -871,9 +868,9 @@ with tab1:
     with col3:
         st.markdown(_fc(
             "Alpha", f"{alpha*100:+.2f}%",
-            _latex(r"\alpha = R_p - \bigl(R_f + \beta(R_b - R_f)\bigr)")
-            + _row("Rp (annualized)", f"{ann_port_ret_alpha:.4f}")
-            + _row("Rb (annualized)", f"{ann_bench_ret_alpha:.4f}")
+            math_formula(m("&alpha;"), mop("="), m("R<sub>p</sub>"), mop("&minus;"), m("(R<sub>f</sub>"), mop("+"), m("&beta;(R<sub>b</sub>"), mop("&minus;"), m("R<sub>f</sub>))"))
+            + _row("R<sub>p</sub> (annualized)", f"{ann_port_ret_alpha:.4f}")
+            + _row("R<sub>b</sub> (annualized)", f"{ann_bench_ret_alpha:.4f}")
             + _row("&beta;", f"{beta:.4f}")
             + f"<hr style='{S_DIV}'>"
             + _result("= Alpha", f"{alpha*100:+.2f}%")
@@ -889,9 +886,9 @@ with tab1:
         )
         st.markdown(_fc(
             "Diversification", f"{effective_positions:.1f}",
-            _latex(r"N_{eff} = \frac{1}{\sum w_i^2}")
+            math_formula(m("N<sub>eff</sub>"), mop("="), math_frac("1", "&Sigma; w<sub>i</sub>&sup2;"))
             + wt_lines
-            + _row("&Sigma; wi&sup2;", f"{weights_squared:.4f}")
+            + _row("&Sigma; w<sub>i</sub>&sup2;", f"{weights_squared:.4f}")
             + f"<hr style='{S_DIV}'>"
             + _result("= Effective Positions", f"{effective_positions:.2f} / {len(st.session_state.tickers)}")
         ), unsafe_allow_html=True)
@@ -1146,8 +1143,8 @@ with tab2:
     from styles import formula_card as _fc_risk
 
     # Reuse the same inline-style snippets
-    S_LATEX = ("background:rgba(255,255,255,.06);padding:10px 14px;"
-               "border-radius:6px;margin:0 0 12px 0;display:block;text-align:center;")
+    from styles import math_frac as mf_r, math_formula as mform_r, m as m_r, mop as mop_r
+
     S_ROW = "display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.06);"
     S_VAR = "color:#c4b5fd !important;font-weight:500;"
     S_NUM = "color:#fff !important;font-weight:600;font-family:'SF Mono','Fira Code',Consolas,monospace;"
@@ -1156,9 +1153,6 @@ with tab2:
     S_RES_VAR = "color:#a5b4fc !important;font-weight:600;"
     S_RES_NUM = "color:#34d399 !important;font-weight:700;font-size:14px;font-family:'SF Mono','Fira Code',Consolas,monospace;"
     S_NOTE = "font-size:11px;color:#94a3b8 !important;margin:8px 0 0 0;"
-
-    def _rlatex(tex):
-        return f"<div style='{S_LATEX}'><span class='fc-latex' data-formula='{tex}'></span></div>"
 
     def _rrow(label, val):
         return f"<div style='{S_ROW}'><span style='{S_VAR}'>{label}</span><span style='{S_NUM}'>{val}</span></div>"
@@ -1171,10 +1165,10 @@ with tab2:
     with col1:
         st.markdown(_fc_risk(
             "Sortino Ratio", f"{sortino:.2f}",
-            _rlatex(r"S_{ortino} = \frac{R_p - R_f}{\sigma_{downside}}")
-            + _rrow("Rp (annualized)", f"{ann_return:.4f}")
-            + _rrow("Rf (annual)", f"{rf_annual_rm:.2%}")
-            + _rrow("&sigma; downside (ann.)", f"{downside_std_annual:.4f}")
+            mform_r(m_r("S"), mop_r("="), mf_r("R<sub>p</sub> &minus; R<sub>f</sub>", "&sigma;<sub>downside</sub>"))
+            + _rrow("R<sub>p</sub> (annualized)", f"{ann_return:.4f}")
+            + _rrow("R<sub>f</sub> (annual)", f"{rf_annual_rm:.2%}")
+            + _rrow("&sigma;<sub>downside</sub> (ann.)", f"{downside_std_annual:.4f}")
             + f"<hr style='{S_DIV}'>"
             + _rresult("= Sortino", f"{sortino:.4f}")
         ), unsafe_allow_html=True)
@@ -1182,7 +1176,7 @@ with tab2:
     with col2:
         st.markdown(_fc_risk(
             "Value at Risk (95%)", f"{var_95*100:.2f}%",
-            _rlatex(r"\mathrm{VaR}_{95} = -Q(R_p,\; 0.05)")
+            mform_r(m_r("VaR<sub>95</sub>"), mop_r("="), m_r("&minus;Q(R<sub>p</sub>,"), m_r("0.05)"))
             + _rrow("5th percentile", f"{(-var_95)*100:.2f}%")
             + f"<hr style='{S_DIV}'>"
             + _rresult("= VaR 95", f"{var_95*100:.2f}%")
@@ -1192,7 +1186,7 @@ with tab2:
     with col3:
         st.markdown(_fc_risk(
             "Conditional VaR (95%)", f"{cvar_95*100:.2f}%",
-            _rlatex(r"\mathrm{CVaR}_{95} = -E\bigl[R_p \mid R_p \le -\mathrm{VaR}\bigr]")
+            mform_r(m_r("CVaR<sub>95</sub>"), mop_r("="), m_r("&minus;E[R<sub>p</sub>"), mop_r("|"), m_r("R<sub>p</sub>"), mop_r("&le;"), m_r("&minus;VaR]"))
             + _rrow("Tail mean", f"{cvar_tail_mean*100:.2f}%")
             + _rrow("Tail observations", f"{len(tail_losses)}")
             + f"<hr style='{S_DIV}'>"

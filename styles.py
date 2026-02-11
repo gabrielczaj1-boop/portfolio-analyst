@@ -24,6 +24,44 @@ RED          = "#f87171"   # red-400
 
 
 # ── Formula hover-card ────────────────────────────────────────────────────
+# ── CSS math helpers (no JS needed) ───────────────────────────────────────
+
+# Inline styles for formula box
+S_MATH_BOX = ("background:rgba(255,255,255,.06);padding:12px 16px;"
+              "border-radius:8px;margin:0 0 12px 0;display:flex;"
+              "align-items:center;justify-content:center;gap:6px;"
+              "font-family:'Times New Roman',Georgia,serif;")
+S_MATH = "color:#e0e7ff !important;font-size:17px;font-style:italic;"
+S_MATH_OP = "color:#818cf8 !important;font-size:17px;font-style:normal;padding:0 2px;"
+
+
+def math_frac(numerator: str, denominator: str) -> str:
+    """Render a CSS-based fraction (numerator over denominator)."""
+    return (
+        f"<span style='display:inline-flex;flex-direction:column;align-items:center;"
+        f"vertical-align:middle;line-height:1.3;'>"
+        f"<span style='{S_MATH}'>{numerator}</span>"
+        f"<span style='width:100%;min-width:40px;border-top:1.5px solid #818cf8;margin:2px 0;'></span>"
+        f"<span style='{S_MATH}'>{denominator}</span>"
+        f"</span>"
+    )
+
+
+def math_formula(*parts: str) -> str:
+    """Wrap formula parts in the styled formula box."""
+    return f"<div style='{S_MATH_BOX}'>{''.join(parts)}</div>"
+
+
+def m(text: str) -> str:
+    """Wrap text in math (italic serif) styling."""
+    return f"<span style='{S_MATH}'>{text}</span>"
+
+
+def mop(text: str) -> str:
+    """Wrap text as a math operator (upright, accent color)."""
+    return f"<span style='{S_MATH_OP}'>{text}</span>"
+
+
 _fc_counter = 0
 
 
@@ -45,18 +83,7 @@ def formula_card(label: str, value: str, formula_html: str, delta: str = "") -> 
         )
 
     return f"""
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 <style>
-#{uid} .katex {{
-    color: #e0e7ff !important;
-    font-size: 1.15em !important;
-}}
-#{uid} .katex .mord, #{uid} .katex .mbin,
-#{uid} .katex .mrel, #{uid} .katex .mopen,
-#{uid} .katex .mclose, #{uid} .katex .mpunct,
-#{uid} .katex .mop {{
-    color: #e0e7ff !important;
-}}
 #{uid} {{
     position: relative;
     z-index: 1;
@@ -111,16 +138,6 @@ def formula_card(label: str, value: str, formula_html: str, delta: str = "") -> 
     </div>
   </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-<script>
-(function(){{
-  var el=document.getElementById("{uid}");
-  if(!el)return;
-  el.querySelectorAll(".fc-latex").forEach(function(n){{
-    try{{katex.render(n.getAttribute("data-formula"),n,{{throwOnError:false,displayMode:false}});}}catch(e){{}}
-  }});
-}})();
-</script>
 """
 
 
