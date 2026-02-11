@@ -544,7 +544,7 @@ with tab1:
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        change_color = "#34d399" if todays_change_dollar >= 0 else "#f87171"
+        change_color = "#00e676" if todays_change_dollar >= 0 else "#ff1744"
         change_arrow = "▲" if todays_change_dollar >= 0 else "▼"
         st.markdown(f"""
             <div style='background: rgba(30,41,59,0.65); padding: 20px 25px; border-radius: 12px; 
@@ -561,7 +561,7 @@ with tab1:
     
     with col2:
         if total_gain is not None:
-            gain_color = "#34d399" if total_gain >= 0 else "#f87171"
+            gain_color = "#00e676" if total_gain >= 0 else "#ff1744"
             gain_arrow = "▲" if total_gain >= 0 else "▼"
             st.markdown(f"""
                 <div style='background: rgba(30,41,59,0.65); padding: 20px 25px; border-radius: 12px; 
