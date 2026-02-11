@@ -1,29 +1,36 @@
 """
 UI styles for Portfolio Analyzer.
 
-Centralizes all custom CSS so Streamlit layout and colors stay
-consistent and easy to tweak.
+Modern dark-mode design inspired by AI company aesthetics.
+Slate backgrounds, blue-purple gradients, glass-morphism cards.
 """
 
 import streamlit as st
 
 
+# ── Color tokens (used by formula_card and importable by app.py) ──────────
+BG_PRIMARY   = "#0f172a"   # slate-900
+BG_SURFACE   = "#1e293b"   # slate-800
+BG_CARD      = "rgba(30,41,59,0.65)"  # glass card
+BORDER       = "rgba(148,163,184,0.12)"
+ACCENT       = "#818cf8"   # indigo-400
+ACCENT_HOVER = "#6366f1"   # indigo-500
+GRADIENT     = "linear-gradient(135deg, #6366f1 0%, #a855f7 100%)"
+TEXT_PRIMARY = "#f1f5f9"   # slate-100
+TEXT_SECONDARY = "#94a3b8" # slate-400
+TEXT_MUTED   = "#64748b"   # slate-500
+GREEN        = "#34d399"   # emerald-400
+RED          = "#f87171"   # red-400
+
+
+# ── Formula hover-card ────────────────────────────────────────────────────
 _fc_counter = 0
 
 
 def formula_card(label: str, value: str, formula_html: str, delta: str = "") -> str:
     """
-    Return a **fully self-contained** HTML metric card with hover overlay.
-
-    Every card gets a unique ID so its embedded ``<style>`` block only
-    affects itself.  All visual properties use inline styles so nothing
-    depends on the global stylesheet.
-
-    Args:
-        label:        metric title  (e.g. "Portfolio Beta")
-        value:        display value (e.g. "1.24")
-        formula_html: rich HTML rows for the formula breakdown
-        delta:        optional delta string shown below the value
+    Self-contained HTML metric card with a hover formula overlay.
+    Each card gets a unique ID + its own <style> block.
     """
     global _fc_counter
     _fc_counter += 1
@@ -31,9 +38,9 @@ def formula_card(label: str, value: str, formula_html: str, delta: str = "") -> 
 
     delta_block = ""
     if delta:
-        color = "#22c55e" if not delta.lstrip().startswith("-") else "#ef4444"
+        color = GREEN if not delta.lstrip().startswith("-") else RED
         delta_block = (
-            f'<p style="font-size:13px;margin:4px 0 0 0;color:{color};font-weight:500;">'
+            f'<p style="font-size:13px;margin:4px 0 0 0;color:{color} !important;font-weight:500;">'
             f"{delta}</p>"
         )
 
@@ -41,17 +48,18 @@ def formula_card(label: str, value: str, formula_html: str, delta: str = "") -> 
 <style>
 #{uid} {{
     position: relative;
-    background: #ffffff;
+    background: {BG_CARD};
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     padding: 22px 24px;
-    border-radius: 10px;
-    border: 1px solid #f0f0f0;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    border-radius: 12px;
+    border: 1px solid {BORDER};
     cursor: default;
-    transition: box-shadow .2s ease, border-color .2s ease;
+    transition: box-shadow .25s ease, border-color .25s ease;
 }}
 #{uid}:hover {{
-    box-shadow: 0 4px 16px rgba(109,40,217,0.15);
-    border-color: #d8b4fe;
+    box-shadow: 0 0 24px rgba(99,102,241,0.15);
+    border-color: rgba(129,140,248,0.35);
 }}
 #{uid} .fc-tip {{
     display: none;
@@ -64,24 +72,26 @@ def formula_card(label: str, value: str, formula_html: str, delta: str = "") -> 
 }}
 </style>
 <div id="{uid}">
-  <p style="font-size:13px;font-weight:600;color:#6b7280;margin:0 0 6px 0;
-            text-transform:uppercase;letter-spacing:.3px;
-            font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <p style="font-size:12px;font-weight:600;color:{TEXT_SECONDARY} !important;margin:0 0 6px 0;
+            text-transform:uppercase;letter-spacing:.5px;
+            font-family:'Inter',system-ui,-apple-system,sans-serif;">
     {label}
   </p>
-  <p style="font-size:28px;font-weight:700;color:#111827;margin:0;line-height:1.2;
-            font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+  <p style="font-size:28px;font-weight:700;color:{TEXT_PRIMARY} !important;margin:0;line-height:1.2;
+            font-family:'Inter',system-ui,-apple-system,sans-serif;">
     {value}
   </p>
   {delta_block}
 
   <div class="fc-tip">
-    <div style="background:#1e1b4b;color:#e0e7ff;border-radius:12px;
-                padding:20px 22px;box-shadow:0 12px 40px rgba(0,0,0,0.3);
+    <div style="background:rgba(15,23,42,0.97);color:#e0e7ff;border-radius:12px;
+                padding:20px 22px;box-shadow:0 16px 48px rgba(0,0,0,0.45);
+                border:1px solid rgba(129,140,248,0.2);
                 font-size:13px;line-height:1.7;min-width:260px;
-                font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+                backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+                font-family:'Inter',system-ui,-apple-system,sans-serif;">
       <p style="font-size:11px;font-weight:700;text-transform:uppercase;
-                letter-spacing:.8px;color:#a5b4fc;margin:0 0 12px 0;">
+                letter-spacing:.8px;color:#818cf8 !important;margin:0 0 12px 0;">
         {label}
       </p>
       {formula_html}
@@ -91,161 +101,164 @@ def formula_card(label: str, value: str, formula_html: str, delta: str = "") -> 
 """
 
 
+# ── Global stylesheet ─────────────────────────────────────────────────────
 def apply_global_styles() -> None:
-    """
-    Inject global CSS for:
-    - Pure white background
-    - Purple accents (#6D28D9) for primary actions
-    - Clean cards with minimal shadows
-    - Sans-serif typography and high whitespace
-    - Wide layout visuals
-    """
+    """Inject the global CSS for the dark AI-company aesthetic."""
     st.markdown(
-        """
+        f"""
         <style>
-        /* Pure white backdrop */
-        .main {
-            background-color: #ffffff;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-        .block-container {
+        /* ── Dark backdrop ── */
+        .main, .stApp {{
+            background-color: {BG_PRIMARY} !important;
+        }}
+
+        .block-container {{
             padding-top: 2rem;
             padding-bottom: 2rem;
             max-width: 1400px;
-        }
+        }}
 
-        /* Metrics styling - minimal shadows */
-        .stMetric {
-            background: #ffffff;
+        /* ── Metrics (glass cards) ── */
+        [data-testid="stMetric"],
+        .stMetric {{
+            background: {BG_CARD} !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             padding: 24px;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10);
-            border: 1px solid #f0f0f0;
-            transition: all 0.2s ease;
-        }
+            border-radius: 12px;
+            border: 1px solid {BORDER} !important;
+            transition: all 0.25s ease;
+        }}
+        [data-testid="stMetric"]:hover,
+        .stMetric:hover {{
+            border-color: rgba(129,140,248,0.3) !important;
+            box-shadow: 0 0 20px rgba(99,102,241,0.1);
+        }}
+        [data-testid="stMetricLabel"],
+        [data-testid="stMetricLabel"] label,
+        [data-testid="stMetricLabel"] p {{
+            color: {TEXT_SECONDARY} !important;
+            font-family: 'Inter', system-ui, sans-serif !important;
+            font-weight: 500 !important;
+            font-size: 13px !important;
+        }}
+        [data-testid="stMetricValue"] {{
+            color: {TEXT_PRIMARY} !important;
+            font-family: 'Inter', system-ui, sans-serif !important;
+            font-weight: 700 !important;
+        }}
+        [data-testid="stMetricDelta"] {{
+            font-family: 'Inter', system-ui, sans-serif !important;
+        }}
 
-        .stMetric:hover {
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-        }
-
-        /* Clean typography with strong contrast */
-        h1 {
-            color: #000000;
-            font-weight: 600;
+        /* ── Typography ── */
+        h1 {{
+            color: {TEXT_PRIMARY} !important;
+            font-weight: 700;
             letter-spacing: -0.8px;
             font-size: 2.5rem;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-                         sans-serif;
-        }
-
-        h2 {
-            color: #000000;
+            font-family: 'Inter', system-ui, sans-serif;
+        }}
+        h2 {{
+            color: {TEXT_PRIMARY} !important;
             font-weight: 600;
             font-size: 1.75rem;
             margin-top: 2rem;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-                         sans-serif;
-        }
-
-        h3, h4 {
-            color: #1a1a1a;
+            font-family: 'Inter', system-ui, sans-serif;
+        }}
+        h3, h4 {{
+            color: {TEXT_PRIMARY} !important;
             font-weight: 500;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-                         sans-serif;
-        }
+            font-family: 'Inter', system-ui, sans-serif;
+        }}
+        p, span, div, label {{
+            color: {TEXT_SECONDARY};
+            font-family: 'Inter', system-ui, sans-serif;
+        }}
 
-        /* All body text */
-        p, span, div, label {
-            color: #333333;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-                         sans-serif;
-        }
-
-        /* Minimal tabs */
-        .stTabs [data-baseweb="tab-list"] {
+        /* ── Tabs ── */
+        .stTabs [data-baseweb="tab-list"] {{
             gap: 4px;
-            background: #ffffff;
-            padding: 8px;
-            border-radius: 8px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .stTabs [data-baseweb="tab"] {
+            background: {BG_SURFACE};
+            padding: 6px;
+            border-radius: 10px;
+            border: 1px solid {BORDER};
+        }}
+        .stTabs [data-baseweb="tab"] {{
             padding: 10px 20px;
             background: transparent;
-            border-radius: 6px;
-            color: #4a4a4a;
+            border-radius: 8px;
+            color: {TEXT_MUTED} !important;
             font-weight: 500;
-            font-size: 15px;
-        }
-
-        .stTabs [aria-selected="true"] {
-            background-color: #f8f9fa;
-            color: #000000;
+            font-size: 14px;
+        }}
+        .stTabs [aria-selected="true"] {{
+            background: rgba(99,102,241,0.15) !important;
+            color: {ACCENT} !important;
             font-weight: 600;
-            border-bottom: 2px solid #6D28D9;
-        }
+            border-bottom: 2px solid {ACCENT};
+        }}
 
-        /* Primary buttons - solid purple accent */
-        .stButton > button {
-            background-color: #6D28D9;
-            color: white;
+        /* ── Buttons (gradient accent) ── */
+        .stButton > button {{
+            background: {GRADIENT} !important;
+            color: white !important;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             padding: 12px 28px;
-            font-weight: 500;
+            font-weight: 600;
             font-size: 15px;
-            box-shadow: 0 1px 3px rgba(109, 40, 217, 0.25);
-            transition: all 0.2s ease;
-        }
+            box-shadow: 0 2px 12px rgba(99,102,241,0.3);
+            transition: all 0.25s ease;
+            font-family: 'Inter', system-ui, sans-serif;
+        }}
+        .stButton > button:hover {{
+            box-shadow: 0 4px 20px rgba(99,102,241,0.45);
+            transform: translateY(-1px);
+        }}
 
-        .stButton > button:hover {
-            background-color: #5B21B6;
-            box-shadow: 0 2px 6px rgba(109, 40, 217, 0.35);
-        }
+        /* ── Data tables ── */
+        .stDataFrame {{
+            background: {BG_CARD} !important;
+            border-radius: 10px;
+            border: 1px solid {BORDER};
+        }}
 
-        /* Data Editor / Tables as white cards */
-        .stDataFrame {
-            background: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10);
-            border: 1px solid #f0f0f0;
-        }
+        /* ── Alerts ── */
+        .stAlert {{
+            background: {BG_SURFACE} !important;
+            border-radius: 10px;
+            border: 1px solid {BORDER};
+        }}
 
-        /* Clean alert boxes */
-        .stAlert {
-            background: #ffffff;
-            border-radius: 8px;
-            border: 1px solid #f0f0f0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10);
-        }
-
-        /* Input fields */
+        /* ── Inputs ── */
         .stSelectbox > div > div,
         .stTextInput > div > div,
-        input {
-            background: #ffffff;
-            border-radius: 6px;
-            border: 1px solid #e0e0e0;
-        }
+        input {{
+            background: {BG_SURFACE} !important;
+            border-radius: 8px;
+            border: 1px solid {BORDER} !important;
+            color: {TEXT_PRIMARY} !important;
+        }}
 
-        /* Time period radio buttons styled as sleek buttons */
-        div[data-testid="stRadio"] > div[role="radiogroup"] {
+        /* ── Radio as pill buttons ── */
+        div[data-testid="stRadio"] > div[role="radiogroup"] {{
             display: flex;
             flex-direction: row;
             gap: 0;
-            background: #f8f9fa;
+            background: {BG_SURFACE};
             padding: 4px;
-            border-radius: 8px;
-            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            border: 1px solid {BORDER};
             width: fit-content;
-        }
-
-        div[data-testid="stRadio"] > div[role="radiogroup"] > label {
+        }}
+        div[data-testid="stRadio"] > div[role="radiogroup"] > label {{
             background: transparent;
             padding: 8px 16px;
-            border-radius: 6px;
-            color: #4b5563 !important;
+            border-radius: 8px;
+            color: {TEXT_MUTED} !important;
             font-weight: 500;
             font-size: 13px;
             cursor: pointer;
@@ -253,43 +266,72 @@ def apply_global_styles() -> None:
             margin: 0 2px;
             border: none;
             white-space: nowrap;
-        }
-
-        div[data-testid="stRadio"] > div[role="radiogroup"] > label:hover {
-            background: #e5e7eb;
-            color: #1f2937 !important;
-        }
-
+        }}
+        div[data-testid="stRadio"] > div[role="radiogroup"] > label:hover {{
+            background: rgba(99,102,241,0.1);
+            color: {TEXT_PRIMARY} !important;
+        }}
         div[data-testid="stRadio"] > div[role="radiogroup"] > label[data-checked="true"],
-        div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) {
-            background: #6D28D9 !important;
+        div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) {{
+            background: {ACCENT} !important;
             color: white !important;
-            box-shadow: 0 1px 3px rgba(109, 40, 217, 0.35);
-        }
-
-        /* Hide the radio circles */
-        div[data-testid="stRadio"] input[type="radio"] {
+            box-shadow: 0 2px 8px rgba(99,102,241,0.35);
+        }}
+        div[data-testid="stRadio"] input[type="radio"] {{
             position: absolute;
             opacity: 0;
             width: 0;
             height: 0;
-        }
+        }}
 
-        /* Dividers */
-        hr {
+        /* ── Dividers ── */
+        hr {{
             border: none;
-            border-top: 1px solid #f0f0f0;
+            border-top: 1px solid {BORDER};
             margin: 2rem 0;
-        }
+        }}
 
-        /* Remove default Streamlit branding colors */
-        .stApp {
-            background-color: #ffffff;
-        }
+        /* ── Streamlit chrome overrides ── */
+        header[data-testid="stHeader"] {{
+            background: {BG_PRIMARY} !important;
+        }}
+        .stDeployButton {{
+            color: {TEXT_SECONDARY} !important;
+        }}
 
-        /* Formula cards use self-contained inline styles + scoped IDs */
+        /* file uploader */
+        [data-testid="stFileUploader"] {{
+            background: {BG_SURFACE} !important;
+            border-radius: 10px;
+            border: 1px solid {BORDER} !important;
+        }}
+
+        /* expanders */
+        .streamlit-expanderHeader {{
+            color: {TEXT_PRIMARY} !important;
+            background: {BG_SURFACE} !important;
+        }}
+        .streamlit-expanderContent {{
+            background: {BG_SURFACE} !important;
+        }}
+
+        /* toast / spinner */
+        .stSpinner > div {{
+            border-top-color: {ACCENT} !important;
+        }}
+
+        /* scrollbar */
+        ::-webkit-scrollbar {{
+            width: 6px;
+        }}
+        ::-webkit-scrollbar-track {{
+            background: {BG_PRIMARY};
+        }}
+        ::-webkit-scrollbar-thumb {{
+            background: {TEXT_MUTED};
+            border-radius: 3px;
+        }}
         </style>
         """,
         unsafe_allow_html=True,
     )
-

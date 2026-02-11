@@ -23,7 +23,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# Global styles (pure white, purple accents, clean cards)
+# Global styles (dark AI-company aesthetic)
 styles.apply_global_styles()
 
 # ============================================================================
@@ -48,11 +48,13 @@ if 'benchmark' not in st.session_state:
 
 st.markdown("""
     <div style='text-align: center; padding: 60px 0 40px 0;'>
-        <h1 style='font-size: 56px; font-weight: 600; color: #000000; 
-                   letter-spacing: -1px; margin-bottom: 16px; line-height: 1.1;'>
+        <h1 style='font-size: 56px; font-weight: 700; color: #f1f5f9 !important; 
+                   letter-spacing: -1.5px; margin-bottom: 16px; line-height: 1.1;
+                   font-family: Inter, system-ui, sans-serif;'>
             Portfolio Analyzer
         </h1>
-        <p style='font-size: 20px; color: #4a4a4a; font-weight: 400; line-height: 1.6;'>
+        <p style='font-size: 20px; color: #94a3b8 !important; font-weight: 400; line-height: 1.6;
+                  font-family: Inter, system-ui, sans-serif;'>
             Professional portfolio analytics and risk management
         </p>
     </div>
@@ -76,18 +78,20 @@ tab0, tab1, tab2, tab3 = st.tabs([
 with tab0:
     st.markdown("""
         <div style='padding: 20px 0 20px 0;'>
-            <h2 style='color: #000000; margin-bottom: 12px; font-weight: 600;'>Enter your portfolio holdings</h2>
-            <p style='color: #333333; font-size: 17px; line-height: 1.7; margin-bottom: 24px;'>
-                Simply enter your holdings below. <strong style='color: #000000;'>You don't need to calculate weights</strong> — 
+            <h2 style='color: #f1f5f9 !important; margin-bottom: 12px; font-weight: 600;'>Enter your portfolio holdings</h2>
+            <p style='color: #94a3b8 !important; font-size: 17px; line-height: 1.7; margin-bottom: 24px;'>
+                Simply enter your holdings below. <strong style='color: #e2e8f0 !important;'>You don't need to calculate weights</strong> — 
                 the app will do it automatically based on current market prices.
             </p>
         </div>
     """, unsafe_allow_html=True)
 
     st.markdown("""
-        <div style='background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #e0e0e0; margin-bottom: 25px;'>
-            <h3 style='color: #000000; margin: 0 0 10px 0; font-size: 16px; font-weight: 600;'>📂 Import from Broker CSV</h3>
-            <p style='color: #4a4a4a; font-size: 14px; margin: 0;'>
+        <div style='background: rgba(30,41,59,0.65); padding: 20px; border-radius: 10px;
+                    border: 1px solid rgba(148,163,184,0.12); margin-bottom: 25px;
+                    backdrop-filter: blur(12px);'>
+            <h3 style='color: #f1f5f9 !important; margin: 0 0 10px 0; font-size: 16px; font-weight: 600;'>📂 Import from Broker CSV</h3>
+            <p style='color: #94a3b8 !important; font-size: 14px; margin: 0;'>
                 Upload your broker export (must contain 'Symbol' and 'Value' columns)
             </p>
         </div>
@@ -160,13 +164,13 @@ with tab0:
                 tickers_list = st.session_state.holdings_df['Ticker'].tolist()
                 st.success(f"CSV loaded: {len(tickers_list)} holdings ({', '.join(tickers_list)})")
     
-    st.markdown("<div style='margin: 25px 0 15px 0;'><hr style='border: none; border-top: 1px solid #e0e0e0;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='margin: 25px 0 15px 0;'><hr style='border: none; border-top: 1px solid rgba(148,163,184,0.12);'></div>", unsafe_allow_html=True)
     
     st.markdown("""
-        <div style='color: #333333; font-size: 15px; line-height: 2; margin-bottom: 20px;'>
-            <p style='margin: 8px 0;'><strong style='color: #000000;'>Ticker</strong> — Stock or crypto symbol (e.g., AAPL, BTC-USD)</p>
-            <p style='margin: 8px 0;'><strong style='color: #000000;'>Shares</strong> — How many shares you own</p>
-            <p style='margin: 8px 0;'><strong style='color: #000000;'>Cost Basis</strong> — Optional: Your average purchase price (for P&L calculation)</p>
+        <div style='color: #94a3b8 !important; font-size: 15px; line-height: 2; margin-bottom: 20px;'>
+            <p style='margin: 8px 0; color: #94a3b8 !important;'><strong style='color: #e2e8f0 !important;'>Ticker</strong> — Stock or crypto symbol (e.g., AAPL, BTC-USD)</p>
+            <p style='margin: 8px 0; color: #94a3b8 !important;'><strong style='color: #e2e8f0 !important;'>Shares</strong> — How many shares you own</p>
+            <p style='margin: 8px 0; color: #94a3b8 !important;'><strong style='color: #e2e8f0 !important;'>Cost Basis</strong> — Optional: Your average purchase price (for P&L calculation)</p>
         </div>
     """, unsafe_allow_html=True)
     
@@ -266,8 +270,8 @@ with tab0:
     
     # Display current portfolio summary if configured
     if st.session_state.portfolio_configured:
-        st.markdown("<div style='margin: 50px 0 30px 0; border-top: 1px solid #f0f0f0; padding-top: 40px;'></div>", unsafe_allow_html=True)
-        st.markdown("<h3 style='margin-bottom: 25px;'>Current Portfolio Summary</h3>", unsafe_allow_html=True)
+        st.markdown("<div style='margin: 50px 0 30px 0; border-top: 1px solid rgba(148,163,184,0.12); padding-top: 40px;'></div>", unsafe_allow_html=True)
+        st.markdown("<h3 style='margin-bottom: 25px; color: #f1f5f9 !important;'>Current Portfolio Summary</h3>", unsafe_allow_html=True)
         
         col1, col2, col3 = st.columns(3)
         
@@ -295,7 +299,7 @@ with tab0:
             )
         
         # Position details table
-        st.markdown("<h4 style='margin-top: 30px; margin-bottom: 15px; color: #2d2d2d; font-weight: 500;'>Position Details</h4>", unsafe_allow_html=True)
+        st.markdown("<h4 style='margin-top: 30px; margin-bottom: 15px; color: #f1f5f9 !important; font-weight: 500;'>Position Details</h4>", unsafe_allow_html=True)
         position_data = []
         for i, ticker in enumerate(st.session_state.tickers):
             shares = st.session_state.holdings_df.iloc[i]['Shares']
@@ -317,7 +321,7 @@ with tab0:
         # P&L Analysis if cost basis provided
         pnl_df = de.calculate_portfolio_pnl(st.session_state.holdings_df, st.session_state.current_prices)
         if pnl_df is not None:
-            st.markdown("<h4 style='margin-top: 30px; margin-bottom: 15px; color: #2d2d2d; font-weight: 500;'>Profit & Loss Analysis</h4>", unsafe_allow_html=True)
+            st.markdown("<h4 style='margin-top: 30px; margin-bottom: 15px; color: #f1f5f9 !important; font-weight: 500;'>Profit & Loss Analysis</h4>", unsafe_allow_html=True)
             
             col1, col2, col3, col4 = st.columns(4)
             
@@ -515,15 +519,16 @@ with tab1:
     # For P&L table display (used later)
     pnl_df = de.calculate_portfolio_pnl(st.session_state.holdings_df, st.session_state.current_prices)
     
-    # Account Summary Header (like Fidelity/Schwab)
+    # Account Summary Header
     st.markdown("""
-        <div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+        <div style='background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); 
                     padding: 30px 35px; border-radius: 16px; margin-bottom: 30px;
-                    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);'>
-            <p style='color: rgba(255,255,255,0.85); font-size: 14px; margin: 0 0 8px 0; font-weight: 500;'>
+                    box-shadow: 0 4px 24px rgba(99,102,241,0.25);'>
+            <p style='color: rgba(255,255,255,0.75) !important; font-size: 13px; margin: 0 0 8px 0;
+                      font-weight: 600; letter-spacing: .5px; text-transform: uppercase;'>
                 TOTAL PORTFOLIO VALUE
             </p>
-            <h1 style='color: #ffffff; font-size: 42px; margin: 0 0 15px 0; font-weight: 700; letter-spacing: -1px;'>
+            <h1 style='color: #ffffff !important; font-size: 42px; margin: 0 0 15px 0; font-weight: 700; letter-spacing: -1px;'>
                 ${:,.2f}
             </h1>
         </div>
@@ -533,16 +538,16 @@ with tab1:
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        change_color = "#22c55e" if todays_change_dollar >= 0 else "#ef4444"
+        change_color = "#34d399" if todays_change_dollar >= 0 else "#f87171"
         change_arrow = "▲" if todays_change_dollar >= 0 else "▼"
         st.markdown(f"""
-            <div style='background: #ffffff; padding: 20px 25px; border-radius: 12px; 
-                        border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.05);'>
-                <p style='color: #6b7280; font-size: 13px; margin: 0 0 8px 0; font-weight: 500;'>Today's Change</p>
-                <p style='color: {change_color}; font-size: 24px; margin: 0; font-weight: 600;'>
+            <div style='background: rgba(30,41,59,0.65); padding: 20px 25px; border-radius: 12px; 
+                        border: 1px solid rgba(148,163,184,0.12); backdrop-filter: blur(12px);'>
+                <p style='color: #94a3b8 !important; font-size: 13px; margin: 0 0 8px 0; font-weight: 500;'>Today's Change</p>
+                <p style='color: {change_color} !important; font-size: 24px; margin: 0; font-weight: 600;'>
                     {change_arrow} ${abs(todays_change_dollar):,.2f}
                 </p>
-                <p style='color: {change_color}; font-size: 14px; margin: 4px 0 0 0;'>
+                <p style='color: {change_color} !important; font-size: 14px; margin: 4px 0 0 0;'>
                     {'+' if todays_change_pct >= 0 else ''}{todays_change_pct:.2f}%
                 </p>
             </div>
@@ -550,26 +555,26 @@ with tab1:
     
     with col2:
         if total_gain is not None:
-            gain_color = "#22c55e" if total_gain >= 0 else "#ef4444"
+            gain_color = "#34d399" if total_gain >= 0 else "#f87171"
             gain_arrow = "▲" if total_gain >= 0 else "▼"
             st.markdown(f"""
-                <div style='background: #ffffff; padding: 20px 25px; border-radius: 12px; 
-                            border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.05);'>
-                    <p style='color: #6b7280; font-size: 13px; margin: 0 0 8px 0; font-weight: 500;'>Total Gain/Loss</p>
-                    <p style='color: {gain_color}; font-size: 24px; margin: 0; font-weight: 600;'>
+                <div style='background: rgba(30,41,59,0.65); padding: 20px 25px; border-radius: 12px; 
+                            border: 1px solid rgba(148,163,184,0.12); backdrop-filter: blur(12px);'>
+                    <p style='color: #94a3b8 !important; font-size: 13px; margin: 0 0 8px 0; font-weight: 500;'>Total Gain/Loss</p>
+                    <p style='color: {gain_color} !important; font-size: 24px; margin: 0; font-weight: 600;'>
                         {gain_arrow} ${abs(total_gain):,.2f}
                     </p>
-                    <p style='color: {gain_color}; font-size: 14px; margin: 4px 0 0 0;'>
+                    <p style='color: {gain_color} !important; font-size: 14px; margin: 4px 0 0 0;'>
                         {'+' if total_gain_pct >= 0 else ''}{total_gain_pct:.2f}%
                     </p>
                 </div>
             """, unsafe_allow_html=True)
         else:
             st.markdown("""
-                <div style='background: #ffffff; padding: 20px 25px; border-radius: 12px; 
-                            border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.05);'>
-                    <p style='color: #6b7280; font-size: 13px; margin: 0 0 8px 0; font-weight: 500;'>Total Gain/Loss</p>
-                    <p style='color: #9ca3af; font-size: 18px; margin: 0; font-weight: 500;'>
+                <div style='background: rgba(30,41,59,0.65); padding: 20px 25px; border-radius: 12px; 
+                            border: 1px solid rgba(148,163,184,0.12); backdrop-filter: blur(12px);'>
+                    <p style='color: #94a3b8 !important; font-size: 13px; margin: 0 0 8px 0; font-weight: 500;'>Total Gain/Loss</p>
+                    <p style='color: #64748b !important; font-size: 18px; margin: 0; font-weight: 500;'>
                         Add cost basis to track
                     </p>
                 </div>
@@ -577,13 +582,13 @@ with tab1:
     
     with col3:
         st.markdown(f"""
-            <div style='background: #ffffff; padding: 20px 25px; border-radius: 12px; 
-                        border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.05);'>
-                <p style='color: #6b7280; font-size: 13px; margin: 0 0 8px 0; font-weight: 500;'>Positions</p>
-                <p style='color: #1f2937; font-size: 24px; margin: 0; font-weight: 600;'>
+            <div style='background: rgba(30,41,59,0.65); padding: 20px 25px; border-radius: 12px; 
+                        border: 1px solid rgba(148,163,184,0.12); backdrop-filter: blur(12px);'>
+                <p style='color: #94a3b8 !important; font-size: 13px; margin: 0 0 8px 0; font-weight: 500;'>Positions</p>
+                <p style='color: #f1f5f9 !important; font-size: 24px; margin: 0; font-weight: 600;'>
                     {len(st.session_state.tickers)}
                 </p>
-                <p style='color: #6b7280; font-size: 14px; margin: 4px 0 0 0;'>
+                <p style='color: #64748b !important; font-size: 14px; margin: 4px 0 0 0;'>
                     Holdings
                 </p>
             </div>
@@ -595,7 +600,7 @@ with tab1:
     # HOLDINGS TABLE (Brokerage Style)
     # ========================================================================
     
-    st.markdown("<h3 style='color: #1f2937; margin-bottom: 20px; font-weight: 600;'>Your Holdings</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color: #f1f5f9; margin-bottom: 20px; font-weight: 600;'>Your Holdings</h3>", unsafe_allow_html=True)
     
     # Build holdings data - prioritize CSV data when available
     holdings_data = []
@@ -685,7 +690,7 @@ with tab1:
     # PORTFOLIO ALLOCATION CHART
     # ========================================================================
     
-    st.markdown("<h3 style='color: #1f2937; margin-bottom: 20px; font-weight: 600;'>Portfolio Allocation</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color: #f1f5f9; margin-bottom: 20px; font-weight: 600;'>Portfolio Allocation</h3>", unsafe_allow_html=True)
     
     # Donut chart for allocation
     fig_allocation = go.Figure(data=[go.Pie(
@@ -695,14 +700,14 @@ with tab1:
         textinfo='label+percent',
         textposition='outside',
         marker=dict(
-            colors=['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', 
-                   '#00f2fe', '#43e97b', '#38f9d7', '#ffecd2', '#fcb69f'][:len(st.session_state.tickers)]
+            colors=['#818cf8', '#a855f7', '#c084fc', '#f472b6', '#38bdf8', 
+                   '#22d3ee', '#34d399', '#2dd4bf', '#fbbf24', '#fb923c'][:len(st.session_state.tickers)]
         ),
-        textfont=dict(size=12, color='#1f2937')
+        textfont=dict(size=12, color='#e2e8f0')
     )])
     
     fig_allocation.update_layout(
-        template='plotly_white',
+        template='plotly_dark',
         height=400,
         showlegend=True,
         legend=dict(
@@ -711,16 +716,16 @@ with tab1:
             y=-0.15,
             xanchor="center",
             x=0.5,
-            font=dict(color='#1f2937', size=11)
+            font=dict(color='#e2e8f0', size=11)
         ),
         margin=dict(t=20, b=60, l=20, r=20),
-        paper_bgcolor='white',
-        plot_bgcolor='white',
-        font=dict(color='#1f2937'),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        font=dict(color='#e2e8f0'),
         annotations=[dict(
             text=f'${st.session_state.total_value:,.0f}',
             x=0.5, y=0.5,
-            font=dict(size=20, color='#1f2937', family='Arial'),
+            font=dict(size=20, color='#e2e8f0', family='Arial'),
             showarrow=False
         )]
     )
@@ -733,7 +738,7 @@ with tab1:
     # YOUR PORTFOLIO METRICS
     # ========================================================================
     
-    st.markdown("<h3 style='color: #1f2937; margin-bottom: 20px; font-weight: 600;'>Your Portfolio Metrics</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color: #f1f5f9; margin-bottom: 20px; font-weight: 600;'>Your Portfolio Metrics</h3>", unsafe_allow_html=True)
     
     # Calculate key metrics based on user's portfolio
     ann_return = de.calculate_annualized_return(portfolio_returns)
@@ -778,7 +783,7 @@ with tab1:
     S_RES = "display:flex;justify-content:space-between;padding:4px 0 0 0;"
     S_RES_VAR = "color:#a5b4fc !important;font-weight:600;"
     S_RES_NUM = "color:#34d399 !important;font-weight:700;font-size:14px;font-family:'SF Mono','Fira Code',Consolas,monospace;"
-    S_NOTE = "font-size:11px;color:#c4d8f5 !important;margin:8px 0 0 0;"
+    S_NOTE = "font-size:11px;color:#94a3b8 !important;margin:8px 0 0 0;"
 
     def _row(label, val):
         return f"<div style='{S_ROW}'><span style='{S_VAR}'>{label}</span><span style='{S_NUM}'>{val}</span></div>"
@@ -896,7 +901,7 @@ with tab1:
     # ========================================================================
     
     if has_csv_gain_loss and len(holdings_data) > 1:
-        st.markdown("<h3 style='color: #1f2937; margin-bottom: 20px; font-weight: 600;'>Position Performance</h3>", unsafe_allow_html=True)
+        st.markdown("<h3 style='color: #f1f5f9; margin-bottom: 20px; font-weight: 600;'>Position Performance</h3>", unsafe_allow_html=True)
         
         # Sort holdings by P&L %
         sorted_by_return = sorted(
@@ -910,9 +915,10 @@ with tab1:
             
             with col1:
                 st.markdown("""
-                    <div style='background: linear-gradient(135deg, #22c55e15 0%, #22c55e05 100%); 
-                                padding: 20px; border-radius: 12px; border: 1px solid #22c55e30;'>
-                        <p style='color: #166534; font-size: 14px; margin: 0 0 15px 0; font-weight: 600;'>
+                    <div style='background: rgba(52,211,153,0.06); 
+                                padding: 20px; border-radius: 12px; border: 1px solid rgba(52,211,153,0.15);'>
+                        <p style='color: #34d399 !important; font-size: 13px; margin: 0 0 15px 0; font-weight: 600;
+                                  letter-spacing: .5px; text-transform: uppercase;'>
                             TOP PERFORMERS
                         </p>
                 """, unsafe_allow_html=True)
@@ -922,8 +928,8 @@ with tab1:
                     pnl_dollar = h.get('Total P&L', 0) or 0
                     st.markdown(f"""
                         <div style='display: flex; justify-content: space-between; margin-bottom: 10px;'>
-                            <span style='color: #1f2937; font-weight: 500;'>{h['Symbol']}</span>
-                            <span style='color: #22c55e; font-weight: 600;'>+{pnl_pct:.1f}% (${pnl_dollar:+,.0f})</span>
+                            <span style='color: #e2e8f0 !important; font-weight: 500;'>{h['Symbol']}</span>
+                            <span style='color: #34d399 !important; font-weight: 600;'>+{pnl_pct:.1f}% (${pnl_dollar:+,.0f})</span>
                         </div>
                     """, unsafe_allow_html=True)
                 
@@ -931,9 +937,10 @@ with tab1:
             
             with col2:
                 st.markdown("""
-                    <div style='background: linear-gradient(135deg, #ef444415 0%, #ef444405 100%); 
-                                padding: 20px; border-radius: 12px; border: 1px solid #ef444430;'>
-                        <p style='color: #991b1b; font-size: 14px; margin: 0 0 15px 0; font-weight: 600;'>
+                    <div style='background: rgba(248,113,113,0.06); 
+                                padding: 20px; border-radius: 12px; border: 1px solid rgba(248,113,113,0.15);'>
+                        <p style='color: #f87171 !important; font-size: 13px; margin: 0 0 15px 0; font-weight: 600;
+                                  letter-spacing: .5px; text-transform: uppercase;'>
                             UNDERPERFORMERS
                         </p>
                 """, unsafe_allow_html=True)
@@ -941,11 +948,11 @@ with tab1:
                 for h in sorted_by_return[-3:]:
                     pnl_pct = h.get('P&L %', 0) or 0
                     pnl_dollar = h.get('Total P&L', 0) or 0
-                    color = "#ef4444" if pnl_pct < 0 else "#22c55e"
+                    color = "#f87171" if pnl_pct < 0 else "#34d399"
                     st.markdown(f"""
                         <div style='display: flex; justify-content: space-between; margin-bottom: 10px;'>
-                            <span style='color: #1f2937; font-weight: 500;'>{h['Symbol']}</span>
-                            <span style='color: {color}; font-weight: 600;'>{pnl_pct:+.1f}% (${pnl_dollar:+,.0f})</span>
+                            <span style='color: #e2e8f0 !important; font-weight: 500;'>{h['Symbol']}</span>
+                            <span style='color: {color} !important; font-weight: 600;'>{pnl_pct:+.1f}% (${pnl_dollar:+,.0f})</span>
                         </div>
                     """, unsafe_allow_html=True)
                 
@@ -957,7 +964,7 @@ with tab1:
     # PORTFOLIO GROWTH CHART
     # ========================================================================
     
-    st.markdown("<h3 style='color: #1f2937; margin-bottom: 20px; font-weight: 600;'>Portfolio Growth</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color: #f1f5f9; margin-bottom: 20px; font-weight: 600;'>Portfolio Growth</h3>", unsafe_allow_html=True)
     
     # Button-style time period selector
     time_period = st.radio(
@@ -1004,8 +1011,8 @@ with tab1:
         mode='lines',
         name='Portfolio',
         fill='tozeroy',
-        line=dict(color='#667eea', width=3),
-        fillcolor='rgba(102, 126, 234, 0.15)'
+        line=dict(color='#818cf8', width=3),
+        fillcolor='rgba(129, 140, 248, 0.12)'
     ))
     
     fig.add_trace(go.Scatter(
@@ -1013,14 +1020,14 @@ with tab1:
         y=(benchmark_cumulative - 1) * 100,
         mode='lines',
         name=f'Benchmark ({benchmark})',
-        line=dict(color='#f093fb', width=2, dash='dash')
+        line=dict(color='#c084fc', width=2, dash='dash')
     ))
     
     # Calculate period return for display
     period_return = (portfolio_cumulative.iloc[-1] - 1) * 100 if len(portfolio_cumulative) > 0 else 0
     
     fig.update_layout(
-        template='plotly_white',
+        template='plotly_dark',
         hovermode='x unified',
         height=450,
         xaxis_title="Date",
@@ -1028,7 +1035,7 @@ with tab1:
         title=dict(
             text=f"<b>{time_period} Return: {period_return:+.2f}% "
                  f"({start_date.date()} → {end_date.date()})</b>",
-            font=dict(size=14, color='#1f2937'),
+            font=dict(size=14, color='#e2e8f0'),
             x=0.5,
             xanchor='center'
         ),
@@ -1038,22 +1045,22 @@ with tab1:
             y=1.02,
             xanchor="right",
             x=1,
-            font=dict(color='#1a1a1a', size=12)
+            font=dict(color='#cbd5e1', size=12)
         ),
-        plot_bgcolor='white',
-        paper_bgcolor='white',
-        font=dict(color='#1a1a1a', size=12),
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)',
+        font=dict(color='#cbd5e1', size=12),
         xaxis=dict(
-            title_font=dict(color='#1a1a1a', size=13), 
-            tickfont=dict(color='#1a1a1a', size=11),
-            gridcolor='#f0f0f0'
+            title_font=dict(color='#cbd5e1', size=13), 
+            tickfont=dict(color='#cbd5e1', size=11),
+            gridcolor='rgba(148,163,184,0.1)'
         ),
         yaxis=dict(
-            title_font=dict(color='#1a1a1a', size=13), 
-            tickfont=dict(color='#1a1a1a', size=11),
-            gridcolor='#f0f0f0',
+            title_font=dict(color='#cbd5e1', size=13), 
+            tickfont=dict(color='#cbd5e1', size=11),
+            gridcolor='rgba(148,163,184,0.1)',
             zeroline=True,
-            zerolinecolor='#e0e0e0',
+            zerolinecolor='rgba(148,163,184,0.15)',
             zerolinewidth=1
         )
     )
@@ -1062,7 +1069,7 @@ with tab1:
     
     # Additional metrics
     st.markdown("<div style='margin: 40px 0;'></div>", unsafe_allow_html=True)
-    st.markdown("<h3 style='color: #1f2937; margin-bottom: 20px;'>Additional Performance Metrics</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color: #f1f5f9; margin-bottom: 20px;'>Additional Performance Metrics</h3>", unsafe_allow_html=True)
     
     col1, col2, col3, col4 = st.columns(4)
     
@@ -1119,7 +1126,7 @@ with tab1:
 # ============================================================================
 
 with tab2:
-    st.markdown("<h2 style='color: #1f2937; margin-bottom: 30px;'>Risk Analysis & Metrics</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='color: #f1f5f9; margin-bottom: 30px;'>Risk Analysis & Metrics</h2>", unsafe_allow_html=True)
     
     # Risk metrics
     sortino = de.calculate_sortino_ratio(portfolio_returns)
@@ -1195,7 +1202,7 @@ with tab2:
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown("<h3 style='color: #1f2937; margin-bottom: 20px;'>Asset Correlation Matrix</h3>", unsafe_allow_html=True)
+        st.markdown("<h3 style='color: #f1f5f9; margin-bottom: 20px;'>Asset Correlation Matrix</h3>", unsafe_allow_html=True)
         
         corr_matrix = de.calculate_correlation_matrix(returns_df)
         
@@ -1209,25 +1216,25 @@ with tab2:
         )
         
         fig.update_layout(
-            template='plotly_white',
+            template='plotly_dark',
             height=400,
             coloraxis_colorbar=dict(
-                title=dict(text="Correlation", font=dict(color='#1a1a1a', size=12)),
-                tickfont=dict(color='#1a1a1a', size=11)
+                title=dict(text="Correlation", font=dict(color='#cbd5e1', size=12)),
+                tickfont=dict(color='#cbd5e1', size=11)
             ),
-            plot_bgcolor='white',
-            paper_bgcolor='white',
-            font=dict(color='#1a1a1a', size=12),
-            xaxis=dict(tickfont=dict(color='#1a1a1a', size=11)),
-            yaxis=dict(tickfont=dict(color='#1a1a1a', size=11))
+            plot_bgcolor='rgba(0,0,0,0)',
+            paper_bgcolor='rgba(0,0,0,0)',
+            font=dict(color='#cbd5e1', size=12),
+            xaxis=dict(tickfont=dict(color='#cbd5e1', size=11)),
+            yaxis=dict(tickfont=dict(color='#cbd5e1', size=11))
         )
         
         st.plotly_chart(fig, use_container_width=True)
         
-        st.markdown("<p style='color: #4a4a4a; font-size: 14px; margin-top: 10px;'>📊 Correlation between asset returns. High correlation = less diversification benefit.</p>", unsafe_allow_html=True)
+        st.markdown("<p style='color: #94a3b8; font-size: 14px; margin-top: 10px;'>📊 Correlation between asset returns. High correlation = less diversification benefit.</p>", unsafe_allow_html=True)
     
     with col2:
-        st.markdown("<h3 style='color: #1f2937; margin-bottom: 20px;'>Risk Contribution by Asset</h3>", unsafe_allow_html=True)
+        st.markdown("<h3 style='color: #f1f5f9; margin-bottom: 20px;'>Risk Contribution by Asset</h3>", unsafe_allow_html=True)
         
         risk_contrib = de.calculate_risk_contribution(returns_df, weights)
         
@@ -1236,16 +1243,16 @@ with tab2:
             values=risk_contrib * 100,
             hole=0.4,
             marker=dict(
-                colors=['#667eea', '#764ba2', '#f093fb', '#4facfe', '#00f2fe', '#43e97b', '#fa709a'],
-                line=dict(color='white', width=2)
+                colors=['#818cf8', '#a855f7', '#c084fc', '#38bdf8', '#22d3ee', '#34d399', '#f472b6'],
+                line=dict(color='#0f172a', width=2)
             ),
             textinfo='label+percent',
             textposition='outside',
-            textfont=dict(size=12, color='#1f2937')
+            textfont=dict(size=12, color='#e2e8f0')
         )])
         
         fig.update_layout(
-            template='plotly_white',
+            template='plotly_dark',
             height=400,
             showlegend=True,
             legend=dict(
@@ -1254,21 +1261,21 @@ with tab2:
                 y=0.5,
                 xanchor="left",
                 x=1.05,
-                font=dict(color='#1f2937', size=12)
+                font=dict(color='#e2e8f0', size=12)
             ),
-            paper_bgcolor='white',
-            plot_bgcolor='white',
-            font=dict(color='#1f2937', size=12),
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+            font=dict(color='#e2e8f0', size=12),
             margin=dict(l=20, r=100, t=20, b=20)
         )
         
         st.plotly_chart(fig, use_container_width=True)
         
-        st.markdown("<p style='color: #4a4a4a; font-size: 14px; margin-top: 10px;'>⚠️ Risk contribution = Weight × Volatility (normalized). Shows which assets drive portfolio risk.</p>", unsafe_allow_html=True)
+        st.markdown("<p style='color: #94a3b8; font-size: 14px; margin-top: 10px;'>⚠️ Risk contribution = Weight × Volatility (normalized). Shows which assets drive portfolio risk.</p>", unsafe_allow_html=True)
     
     # Returns distribution
     st.markdown("<div style='margin: 40px 0;'></div>", unsafe_allow_html=True)
-    st.markdown("<h3 style='color: #1f2937; margin-bottom: 20px;'>Portfolio Returns Distribution</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color: #f1f5f9; margin-bottom: 20px;'>Portfolio Returns Distribution</h3>", unsafe_allow_html=True)
     
     fig = go.Figure()
     
@@ -1277,8 +1284,8 @@ with tab2:
         nbinsx=50,
         name='Returns',
         marker=dict(
-            color='#667eea',
-            line=dict(color='#764ba2', width=1)
+            color='#818cf8',
+            line=dict(color='#6366f1', width=1)
         ),
         opacity=0.8
     ))
@@ -1287,23 +1294,23 @@ with tab2:
     fig.add_vline(
         x=-var_95 * 100,
         line_dash="dash",
-        line_color="#f093fb",
+        line_color="#c084fc",
         annotation_text=f"VaR 95%: {var_95*100:.2f}%",
         annotation_position="top",
-        annotation=dict(font_color='#2d2d2d')
+        annotation=dict(font_color='#e2e8f0')
     )
     
     fig.update_layout(
-        template='plotly_white',
+        template='plotly_dark',
         height=400,
         xaxis_title="Daily Return (%)",
         yaxis_title="Frequency",
         showlegend=False,
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
-        font=dict(color='#1a1a1a', size=12),
-        xaxis=dict(title_font=dict(color='#1a1a1a', size=13), tickfont=dict(color='#1a1a1a', size=11)),
-        yaxis=dict(title_font=dict(color='#1a1a1a', size=13), tickfont=dict(color='#1a1a1a', size=11))
+        font=dict(color='#cbd5e1', size=12),
+        xaxis=dict(title_font=dict(color='#cbd5e1', size=13), tickfont=dict(color='#cbd5e1', size=11)),
+        yaxis=dict(title_font=dict(color='#cbd5e1', size=13), tickfont=dict(color='#cbd5e1', size=11))
     )
     
     st.plotly_chart(fig, use_container_width=True)
@@ -1313,7 +1320,7 @@ with tab2:
 # ============================================================================
 
 with tab3:
-    st.markdown("<h2 style='color: #1f2937; margin-bottom: 30px;'>Deep Dive: Monthly Performance Analysis</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='color: #f1f5f9; margin-bottom: 30px;'>Deep Dive: Monthly Performance Analysis</h2>", unsafe_allow_html=True)
     
     # Get monthly returns
     monthly_returns = de.get_monthly_returns(portfolio_returns)
@@ -1329,30 +1336,30 @@ with tab3:
         texttemplate='%{text}%',
         textfont={"size": 11, "color": "#1f2937"},
         colorbar=dict(
-            title=dict(text="Return (%)", font=dict(color='#1f2937', size=12)),
-            tickfont=dict(color='#1f2937', size=11)
+            title=dict(text="Return (%)", font=dict(color='#e2e8f0', size=12)),
+            tickfont=dict(color='#e2e8f0', size=11)
         )
     ))
     
     fig.update_layout(
-        template='plotly_white',
+        template='plotly_dark',
         height=max(400, len(monthly_returns) * 40),
         xaxis_title="Month",
         yaxis_title="Year",
-        yaxis=dict(autorange='reversed', title_font=dict(color='#1f2937', size=13), tickfont=dict(color='#1f2937', size=11)),
-        plot_bgcolor='white',
-        paper_bgcolor='white',
-        font=dict(color='#1f2937', size=12),
-        xaxis=dict(title_font=dict(color='#1f2937', size=13), tickfont=dict(color='#1f2937', size=11))
+        yaxis=dict(autorange='reversed', title_font=dict(color='#e2e8f0', size=13), tickfont=dict(color='#e2e8f0', size=11)),
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)',
+        font=dict(color='#e2e8f0', size=12),
+        xaxis=dict(title_font=dict(color='#e2e8f0', size=13), tickfont=dict(color='#e2e8f0', size=11))
     )
     
     st.plotly_chart(fig, use_container_width=True)
     
-    st.markdown("<p style='color: #4a4a4a; font-size: 14px; margin-top: 10px;'>🔬 Monthly returns heatmap. Green = positive, Red = negative. Quickly spot seasonal patterns.</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #94a3b8; font-size: 14px; margin-top: 10px;'>🔬 Monthly returns heatmap. Green = positive, Red = negative. Quickly spot seasonal patterns.</p>", unsafe_allow_html=True)
     
     # Monthly statistics
     st.markdown("<div style='margin: 40px 0;'></div>", unsafe_allow_html=True)
-    st.markdown("<h3 style='color: #1f2937; margin-bottom: 20px;'>Monthly Statistics</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color: #f1f5f9; margin-bottom: 20px;'>Monthly Statistics</h3>", unsafe_allow_html=True)
     
     col1, col2, col3, col4 = st.columns(4)
     
@@ -1391,8 +1398,8 @@ with tab3:
         )
     
     # Asset contribution analysis
-    st.markdown("<div style='margin: 40px 0; border-top: 1px solid #e5e7eb;'></div>", unsafe_allow_html=True)
-    st.markdown("<h3 style='color: #1f2937; margin-bottom: 20px;'>Asset Performance Breakdown</h3>", unsafe_allow_html=True)
+    st.markdown("<div style='margin: 40px 0; border-top: 1px solid rgba(148,163,184,0.12);'></div>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color: #f1f5f9; margin-bottom: 20px;'>Asset Performance Breakdown</h3>", unsafe_allow_html=True)
     
     # Button-style time period selector
     asset_time_period = st.radio(
@@ -1435,7 +1442,7 @@ with tab3:
     fig = go.Figure()
     
     # Modern gradient color palette
-    colors = ['#667eea', '#764ba2', '#f093fb', '#4facfe', '#00f2fe', '#43e97b', '#fa709a', '#ff6348']
+    colors = ['#818cf8', '#a855f7', '#c084fc', '#38bdf8', '#22d3ee', '#34d399', '#f472b6', '#fb923c']
     
     for i, ticker in enumerate(tickers):
         if ticker in asset_cumulative:
@@ -1448,7 +1455,7 @@ with tab3:
             ))
     
     fig.update_layout(
-        template='plotly_white',
+        template='plotly_dark',
         height=400,
         xaxis_title="Date",
         yaxis_title="Return (%)",
@@ -1459,28 +1466,28 @@ with tab3:
             y=1.02,
             xanchor="right",
             x=1,
-            font=dict(color='#1a1a1a', size=12)
+            font=dict(color='#cbd5e1', size=12)
         ),
-        plot_bgcolor='white',
-        paper_bgcolor='white',
-        font=dict(color='#1a1a1a', size=12),
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)',
+        font=dict(color='#cbd5e1', size=12),
         xaxis=dict(
-            title_font=dict(color='#1a1a1a', size=13), 
-            tickfont=dict(color='#1a1a1a', size=11),
-            gridcolor='#f0f0f0'
+            title_font=dict(color='#cbd5e1', size=13), 
+            tickfont=dict(color='#cbd5e1', size=11),
+            gridcolor='rgba(148,163,184,0.1)'
         ),
         yaxis=dict(
-            title_font=dict(color='#1a1a1a', size=13), 
-            tickfont=dict(color='#1a1a1a', size=11),
-            gridcolor='#f0f0f0',
+            title_font=dict(color='#cbd5e1', size=13), 
+            tickfont=dict(color='#cbd5e1', size=11),
+            gridcolor='rgba(148,163,184,0.1)',
             zeroline=True,
-            zerolinecolor='#e0e0e0'
+            zerolinecolor='rgba(148,163,184,0.15)'
         )
     )
     
     st.plotly_chart(fig, use_container_width=True)
     
-    st.markdown("<p style='color: #4a4a4a; font-size: 14px; margin-top: 10px;'>Individual asset performance over the selected period. Returns start at 0% from the beginning of the period.</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #94a3b8; font-size: 14px; margin-top: 10px;'>Individual asset performance over the selected period. Returns start at 0% from the beginning of the period.</p>", unsafe_allow_html=True)
 
 
 
@@ -1490,11 +1497,11 @@ with tab3:
 
 st.markdown("""
     <div style='text-align: center; padding: 60px 20px 40px 20px; 
-                margin-top: 60px; border-top: 1px solid #f0f0f0;'>
-        <p style='font-size: 15px; color: #4a4a4a; font-weight: 400; margin-bottom: 12px;'>
+                margin-top: 60px; border-top: 1px solid rgba(148,163,184,0.12);'>
+        <p style='font-size: 15px; color: #64748b !important; font-weight: 400; margin-bottom: 12px;'>
             Built with Streamlit, Plotly & yfinance
         </p>
-        <p style='font-size: 13px; color: #666666; line-height: 1.6;'>
+        <p style='font-size: 13px; color: #475569 !important; line-height: 1.6;'>
             Disclaimer: This tool is for educational purposes only. Not financial advice.
         </p>
     </div>
