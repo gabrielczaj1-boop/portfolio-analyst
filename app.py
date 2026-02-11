@@ -1597,7 +1597,7 @@ with tab_news:
                 if tk in returns_df.columns and len(returns_df[tk]) > 0:
                     last_ret = returns_df[tk].iloc[-1]
                     if not pd.isna(last_ret):
-                        ticker_day_colors[tk] = "#34d399" if last_ret >= 0 else "#f87171"
+                        ticker_day_colors[tk] = "#00e676" if last_ret >= 0 else "#ff1744"
                     else:
                         ticker_day_colors[tk] = "#818cf8"
                 else:
@@ -1640,7 +1640,7 @@ with tab_news:
             # Ticker badge color: green if up today, red if down
             tk_sym = article["source_ticker"]
             tk_color = ticker_day_colors.get(tk_sym, "#818cf8")
-            tk_bg = "rgba(52,211,153,0.12)" if tk_color == "#34d399" else "rgba(248,113,113,0.12)" if tk_color == "#f87171" else "rgba(129,140,248,0.15)"
+            tk_bg = "rgba(0,230,118,0.15)" if tk_color == "#00e676" else "rgba(255,23,68,0.15)" if tk_color == "#ff1744" else "rgba(129,140,248,0.15)"
 
             # Build full card HTML as a single string
             card_html = (
@@ -1654,12 +1654,13 @@ with tab_news:
                 "-webkit-box-orient:vertical;overflow:hidden;'>"
                 + article["title"] + "</p>"
                 + summary_html
-                + "<div style='display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:4px;'>"
+                + "<div style='display:flex;align-items:center;flex-wrap:wrap;margin-top:6px;'>"
                 "<span style='background:" + tk_bg + ";color:" + tk_color + " !important;"
                 "padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;"
                 "letter-spacing:.3px;'>" + tk_sym + "</span>"
+                "<span style='color:#475569 !important;font-size:12px;margin:0 10px;'>&bull;</span>"
                 "<span style='color:#94a3b8 !important;font-size:12px;'>" + article["publisher"] + "</span>"
-                "<span style='color:#475569 !important;font-size:11px;'>&bull;</span>"
+                "<span style='color:#475569 !important;font-size:12px;margin:0 10px;'>&bull;</span>"
                 "<span style='color:#94a3b8 !important;font-size:12px;'>" + time_ago + "</span>"
                 "</div></div>"
                 + thumb_html
