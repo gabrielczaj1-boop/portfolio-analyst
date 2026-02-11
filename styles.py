@@ -65,7 +65,7 @@ def formula_card(label: str, value: str, formula_html: str, delta: str = "") -> 
     display: none;
     position: absolute;
     top: 0; left: 0; right: 0;
-    z-index: 9999;
+    z-index: 999999;
 }}
 #{uid}:hover .fc-tip {{
     display: block;
@@ -112,6 +112,15 @@ def apply_global_styles() -> None:
         /* ── Dark backdrop ── */
         .main, .stApp {{
             background-color: {BG_PRIMARY} !important;
+        }}
+
+        /* Let formula tooltips escape column/container boundaries */
+        [data-testid="column"],
+        [data-testid="stVerticalBlock"],
+        [data-testid="stHorizontalBlock"],
+        .stColumn,
+        .element-container {{
+            overflow: visible !important;
         }}
 
         .block-container {{
