@@ -2023,12 +2023,9 @@ with tab4:
 # ============================================================================
 
 st.markdown("""
-    <div style='text-align: center; padding: 60px 20px 40px 20px; 
-                margin-top: 60px; border-top: 1px solid rgba(148,163,184,0.12);'>
-        <p style='font-size: 15px; color: #64748b !important; font-weight: 400; margin-bottom: 12px;'>
-            Built with Streamlit, Plotly & yfinance
-        </p>
-        <p style='font-size: 13px; color: #475569 !important; line-height: 1.6;'>
+    <div style='text-align: center; padding: 20px 20px 16px 20px; 
+                margin-top: 30px; border-top: 1px solid rgba(148,163,184,0.08);'>
+        <p style='font-size: 11px; color: #475569 !important; margin: 0;'>
             Disclaimer: This tool is for educational purposes only. Not financial advice.
         </p>
     </div>
