@@ -174,8 +174,74 @@ def apply_global_styles() -> None:
             font-family: 'Inter', system-ui, sans-serif;
         }}
         p, span, div, label {{
-            color: {TEXT_SECONDARY};
+            color: {TEXT_SECONDARY} !important;
             font-family: 'Inter', system-ui, sans-serif;
+        }}
+
+        /* ── Force light text on ALL Streamlit internals ── */
+        .stMarkdown, .stMarkdown p, .stMarkdown span, .stMarkdown div,
+        .stText, .stText p,
+        [data-testid="stText"],
+        [data-testid="stMarkdownContainer"],
+        [data-testid="stMarkdownContainer"] p,
+        [data-testid="stMarkdownContainer"] span,
+        [data-testid="stMarkdownContainer"] div,
+        [data-testid="stMarkdownContainer"] li,
+        [data-testid="stMarkdownContainer"] strong,
+        [data-testid="stCaptionContainer"],
+        [data-testid="stCaptionContainer"] p,
+        .element-container, .element-container p, .element-container span {{
+            color: {TEXT_SECONDARY} !important;
+        }}
+        strong, b {{
+            color: {TEXT_PRIMARY} !important;
+        }}
+        [data-testid="stMetricValue"],
+        [data-testid="stMetricValue"] div {{
+            color: {TEXT_PRIMARY} !important;
+        }}
+        [data-testid="stMetricDelta"] svg {{
+            fill: currentColor;
+        }}
+
+        /* info / success / warning / error boxes */
+        .stAlert p, .stAlert span, .stAlert div {{
+            color: {TEXT_SECONDARY} !important;
+        }}
+
+        /* file uploader text */
+        [data-testid="stFileUploader"] p,
+        [data-testid="stFileUploader"] span,
+        [data-testid="stFileUploader"] div,
+        [data-testid="stFileUploader"] label {{
+            color: {TEXT_SECONDARY} !important;
+        }}
+
+        /* data editor / table text */
+        .stDataFrame th, .stDataFrame td {{
+            color: {TEXT_SECONDARY} !important;
+        }}
+
+        /* column config / header text in data editor */
+        [data-testid="stDataFrameResizable"] {{
+            color: {TEXT_SECONDARY} !important;
+        }}
+
+        /* tooltip / help icons */
+        [data-testid="stTooltipIcon"] svg {{
+            fill: {TEXT_MUTED} !important;
+        }}
+
+        /* selectbox / dropdown text */
+        .stSelectbox label, .stSelectbox p, .stSelectbox span,
+        .stMultiSelect label, .stMultiSelect p, .stMultiSelect span {{
+            color: {TEXT_SECONDARY} !important;
+        }}
+
+        /* checkbox / radio label text */
+        .stCheckbox label span,
+        .stRadio label span {{
+            color: {TEXT_SECONDARY} !important;
         }}
 
         /* ── Tabs ── */
