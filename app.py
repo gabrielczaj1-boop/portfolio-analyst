@@ -1584,8 +1584,18 @@ with tab_news:
             </div>
         """, unsafe_allow_html=True)
     else:
-        # Show article count
-        st.markdown(f"<p style='color: #64748b !important; font-size: 13px; margin-bottom: 20px;'>{len(news_articles)} article{'s' if len(news_articles) != 1 else ''} found</p>", unsafe_allow_html=True)
+        # Sort control and article count
+        sort_col1, sort_col2 = st.columns([3, 1])
+        with sort_col1:
+            st.markdown(f"<p style='color: #64748b !important; font-size: 13px; margin-top: 8px;'>{len(news_articles)} article{'s' if len(news_articles) != 1 else ''} found</p>", unsafe_allow_html=True)
+        with sort_col2:
+            news_sort = st.selectbox("Sort by", ["Most Recent", "Ticker"], key="news_sort", label_visibility="collapsed")
+
+        # Apply sorting
+        if news_sort == "Ticker":
+            ticker_order = {t: i for i, t in enumerate(tickers)}
+            news_articles = sorted(news_articles, key=lambda a: (ticker_order.get(a["source_ticker"], 999), -a["published"].timestamp()))
+        # else already sorted by most recent from fetch
 
         from datetime import datetime, timezone
         now_utc = datetime.now(tz=timezone.utc)
