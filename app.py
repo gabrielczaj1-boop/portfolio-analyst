@@ -1590,6 +1590,21 @@ with tab_news:
         from datetime import datetime, timezone
         now_utc = datetime.now(tz=timezone.utc)
 
+        # Get today's return per ticker for green/red badge color
+        ticker_day_colors = {}
+        for tk in tickers:
+            try:
+                if tk in returns_df.columns and len(returns_df[tk]) > 0:
+                    last_ret = returns_df[tk].iloc[-1]
+                    if not pd.isna(last_ret):
+                        ticker_day_colors[tk] = "#34d399" if last_ret >= 0 else "#f87171"
+                    else:
+                        ticker_day_colors[tk] = "#818cf8"
+                else:
+                    ticker_day_colors[tk] = "#818cf8"
+            except Exception:
+                ticker_day_colors[tk] = "#818cf8"
+
         for article in news_articles:
             # Time ago calculation
             delta = now_utc - article["published"]
@@ -1604,9 +1619,9 @@ with tab_news:
             summary_html = ""
             if article.get("summary"):
                 summary_html = (
-                    "<p style='color: #94a3b8 !important; font-size: 13px; margin: 0 0 8px 0; "
-                    "line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; "
-                    "-webkit-box-orient: vertical; overflow: hidden;'>"
+                    "<p style='color:#94a3b8 !important;font-size:13px;margin:0 0 10px 0;"
+                    "line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;"
+                    "-webkit-box-orient:vertical;overflow:hidden;'>"
                     + article["summary"] + "</p>"
                 )
 
@@ -1622,6 +1637,11 @@ with tab_news:
                     "</div>"
                 )
 
+            # Ticker badge color: green if up today, red if down
+            tk_sym = article["source_ticker"]
+            tk_color = ticker_day_colors.get(tk_sym, "#818cf8")
+            tk_bg = "rgba(52,211,153,0.12)" if tk_color == "#34d399" else "rgba(248,113,113,0.12)" if tk_color == "#f87171" else "rgba(129,140,248,0.15)"
+
             # Build full card HTML as a single string
             card_html = (
                 "<a href='" + article["link"] + "' target='_blank' style='text-decoration:none;display:block;'>"
@@ -1634,13 +1654,13 @@ with tab_news:
                 "-webkit-box-orient:vertical;overflow:hidden;'>"
                 + article["title"] + "</p>"
                 + summary_html
-                + "<div style='display:flex;align-items:center;gap:10px;flex-wrap:wrap;'>"
-                "<span style='background:rgba(129,140,248,0.15);color:#818cf8 !important;"
-                "padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;"
-                "letter-spacing:.3px;'>" + article["source_ticker"] + "</span>"
-                "<span style='color:#64748b !important;font-size:12px;'>" + article["publisher"] + "</span>"
-                "<span style='color:#475569 !important;font-size:12px;'>&bull;</span>"
-                "<span style='color:#64748b !important;font-size:12px;'>" + time_ago + "</span>"
+                + "<div style='display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:4px;'>"
+                "<span style='background:" + tk_bg + ";color:" + tk_color + " !important;"
+                "padding:3px 10px;border-radius:4px;font-size:11px;font-weight:700;"
+                "letter-spacing:.3px;'>" + tk_sym + "</span>"
+                "<span style='color:#94a3b8 !important;font-size:12px;'>" + article["publisher"] + "</span>"
+                "<span style='color:#475569 !important;font-size:11px;'>&bull;</span>"
+                "<span style='color:#94a3b8 !important;font-size:12px;'>" + time_ago + "</span>"
                 "</div></div>"
                 + thumb_html
                 + "</div></a>"
