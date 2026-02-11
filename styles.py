@@ -45,7 +45,18 @@ def formula_card(label: str, value: str, formula_html: str, delta: str = "") -> 
         )
 
     return f"""
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 <style>
+#{uid} .katex {{
+    color: #e0e7ff !important;
+    font-size: 1.15em !important;
+}}
+#{uid} .katex .mord, #{uid} .katex .mbin,
+#{uid} .katex .mrel, #{uid} .katex .mopen,
+#{uid} .katex .mclose, #{uid} .katex .mpunct,
+#{uid} .katex .mop {{
+    color: #e0e7ff !important;
+}}
 #{uid} {{
     position: relative;
     z-index: 1;
@@ -100,6 +111,16 @@ def formula_card(label: str, value: str, formula_html: str, delta: str = "") -> 
     </div>
   </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script>
+(function(){{
+  var el=document.getElementById("{uid}");
+  if(!el)return;
+  el.querySelectorAll(".fc-latex").forEach(function(n){{
+    try{{katex.render(n.getAttribute("data-formula"),n,{{throwOnError:false,displayMode:false}});}}catch(e){{}}
+  }});
+}})();
+</script>
 """
 
 
