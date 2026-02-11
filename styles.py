@@ -1,5 +1,5 @@
 """
-Zinnia-inspired UI styles for Portfolio Analyzer.
+UI styles for Portfolio Analyzer.
 
 Centralizes all custom CSS so Streamlit layout and colors stay
 consistent and easy to tweak.

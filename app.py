@@ -23,7 +23,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# Zinnia-inspired global styles (pure white, purple accents, clean cards)
+# Global styles (pure white, purple accents, clean cards)
 styles.apply_global_styles()
 
 # ============================================================================
@@ -778,7 +778,7 @@ with tab1:
     S_RES = "display:flex;justify-content:space-between;padding:4px 0 0 0;"
     S_RES_VAR = "color:#a5b4fc !important;font-weight:600;"
     S_RES_NUM = "color:#34d399 !important;font-weight:700;font-size:14px;font-family:'SF Mono','Fira Code',Consolas,monospace;"
-    S_NOTE = "font-size:11px;color:#94a3b8 !important;margin:8px 0 0 0;"
+    S_NOTE = "font-size:11px;color:#c4d8f5 !important;margin:8px 0 0 0;"
 
     def _row(label, val):
         return f"<div style='{S_ROW}'><span style='{S_VAR}'>{label}</span><span style='{S_NUM}'>{val}</span></div>"
