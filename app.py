@@ -64,11 +64,12 @@ st.markdown("""
 # TAB NAVIGATION
 # ============================================================================
 
-tab0, tab1, tab2, tab3 = st.tabs([
+tab0, tab1, tab2, tab3, tab4 = st.tabs([
     "💼 Portfolio Input",
     "📈 Overview",
     "⚠️ Risk Metrics", 
     "🔬 Factor Analysis",
+    "🧠 Financial Advisor",
 ])
 
 # ============================================================================
@@ -361,6 +362,8 @@ if not st.session_state.portfolio_configured:
     with tab2:
         st.info("👈 Please configure your portfolio in the **Portfolio Input** tab first")
     with tab3:
+        st.info("👈 Please configure your portfolio in the **Portfolio Input** tab first")
+    with tab4:
         st.info("👈 Please configure your portfolio in the **Portfolio Input** tab first")
     st.stop()
 
@@ -1488,6 +1491,333 @@ with tab3:
     st.markdown("<p style='color: #94a3b8; font-size: 14px; margin-top: 10px;'>Individual asset performance over the selected period. Returns start at 0% from the beginning of the period.</p>", unsafe_allow_html=True)
 
 
+
+# ============================================================================
+# TAB 4: FINANCIAL ADVISOR
+# ============================================================================
+
+with tab4:
+    st.markdown("<h2 style='color: #f1f5f9 !important; margin-bottom: 10px;'>Portfolio Research & Insights</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #94a3b8 !important; font-size: 15px; margin-bottom: 30px;'>Automated analysis based on your portfolio's computed metrics</p>", unsafe_allow_html=True)
+
+    # Recalculate all metrics needed for advisor (some already computed in earlier tabs)
+    adv_ann_return = de.calculate_annualized_return(portfolio_returns)
+    adv_ann_vol = de.calculate_annualized_volatility(portfolio_returns)
+    adv_sharpe = de.calculate_sharpe_ratio(portfolio_returns)
+    adv_sortino = de.calculate_sortino_ratio(portfolio_returns)
+    adv_max_dd = de.calculate_max_drawdown(portfolio_returns)
+    adv_alpha, adv_beta = de.calculate_alpha_beta(portfolio_returns, benchmark_returns)
+    adv_var_95 = de.calculate_var(portfolio_returns, confidence=0.95)
+    adv_cvar_95 = de.calculate_cvar(portfolio_returns, confidence=0.95)
+    adv_weights = st.session_state.weights
+    adv_tickers = st.session_state.tickers
+    adv_weights_sq = sum([w**2 for w in adv_weights])
+    adv_n_eff = 1 / adv_weights_sq if adv_weights_sq > 0 else len(adv_weights)
+    adv_corr = de.calculate_correlation_matrix(returns_df)
+    adv_win_rate = (portfolio_returns > 0).sum() / len(portfolio_returns) * 100 if len(portfolio_returns) > 0 else 0
+    adv_max_weight = max(adv_weights)
+    adv_max_weight_ticker = adv_tickers[adv_weights.index(adv_max_weight)]
+
+    # ── Build advisory sections ──
+
+    # Helper for section cards
+    def advisor_card(icon, title, content, color="#818cf8"):
+        st.markdown(f"""
+            <div style='background: rgba(30,41,59,0.65); padding: 24px 28px; border-radius: 12px;
+                        border: 1px solid rgba(148,163,184,0.12); margin-bottom: 20px;
+                        border-left: 3px solid {color}; backdrop-filter: blur(12px);'>
+                <p style='color: {color} !important; font-size: 13px; font-weight: 700; margin: 0 0 8px 0;
+                          text-transform: uppercase; letter-spacing: .5px;'>
+                    {icon} {title}
+                </p>
+                <div style='color: #cbd5e1 !important; font-size: 14px; line-height: 1.8;'>
+                    {content}
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+
+    # ── 1. Portfolio Health Score ──
+    health_score = 0
+    health_notes = []
+
+    # Sharpe
+    if adv_sharpe >= 1.0:
+        health_score += 25
+        health_notes.append("Excellent risk-adjusted returns (Sharpe &ge; 1.0)")
+    elif adv_sharpe >= 0.5:
+        health_score += 15
+        health_notes.append("Decent risk-adjusted returns (Sharpe 0.5&ndash;1.0)")
+    else:
+        health_score += 5
+        health_notes.append("Low risk-adjusted returns (Sharpe &lt; 0.5)")
+
+    # Diversification
+    if adv_n_eff >= len(adv_tickers) * 0.6:
+        health_score += 25
+        health_notes.append("Well-diversified &mdash; weight distribution is balanced")
+    elif adv_n_eff >= len(adv_tickers) * 0.3:
+        health_score += 15
+        health_notes.append("Moderately diversified &mdash; some concentration risk")
+    else:
+        health_score += 5
+        health_notes.append("Highly concentrated &mdash; a few positions dominate")
+
+    # Max Drawdown
+    if abs(adv_max_dd) < 0.15:
+        health_score += 25
+        health_notes.append("Drawdown well-contained (under 15%)")
+    elif abs(adv_max_dd) < 0.30:
+        health_score += 15
+        health_notes.append("Moderate drawdown risk (15&ndash;30%)")
+    else:
+        health_score += 5
+        health_notes.append("High drawdown risk (over 30%)")
+
+    # Alpha
+    if adv_alpha > 0:
+        health_score += 25
+        health_notes.append("Positive alpha &mdash; outperforming the benchmark")
+    elif adv_alpha > -0.02:
+        health_score += 15
+        health_notes.append("Near-zero alpha &mdash; tracking close to benchmark")
+    else:
+        health_score += 5
+        health_notes.append("Negative alpha &mdash; underperforming the benchmark")
+
+    score_color = "#34d399" if health_score >= 70 else "#fbbf24" if health_score >= 45 else "#f87171"
+    score_label = "Strong" if health_score >= 70 else "Moderate" if health_score >= 45 else "Needs Attention"
+
+    st.markdown(f"""
+        <div style='background: rgba(30,41,59,0.65); padding: 28px 32px; border-radius: 14px;
+                    border: 1px solid rgba(148,163,184,0.12); margin-bottom: 30px;
+                    backdrop-filter: blur(12px); text-align: center;'>
+            <p style='color: #94a3b8 !important; font-size: 12px; font-weight: 600; margin: 0 0 8px 0;
+                      text-transform: uppercase; letter-spacing: .8px;'>
+                Portfolio Health Score
+            </p>
+            <p style='color: {score_color} !important; font-size: 56px; font-weight: 800; margin: 0;
+                      line-height: 1; font-family: Inter, system-ui, sans-serif;'>
+                {health_score}
+            </p>
+            <p style='color: {score_color} !important; font-size: 16px; font-weight: 600; margin: 6px 0 0 0;'>
+                {score_label}
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
+
+    # ── 2. Return Analysis ──
+    ret_text = f"Your portfolio's <strong style='color:#f1f5f9 !important;'>annualized return is {adv_ann_return*100:.2f}%</strong>. "
+    if adv_ann_return > 0.12:
+        ret_text += "This is a strong return profile, significantly outpacing typical long-term market averages (~8&ndash;10% annualized for the S&P 500). "
+        ret_text += "Consider whether this is driven by a few high-growth holdings or broad-based gains. High returns often come with elevated risk."
+    elif adv_ann_return > 0.06:
+        ret_text += "This is a solid return roughly in line with or slightly above historical equity market averages. "
+        ret_text += "The portfolio appears to be generating reasonable growth without excessive risk-taking."
+    elif adv_ann_return > 0:
+        ret_text += "This is a modest return, underperforming typical equity benchmarks. "
+        ret_text += "Consider reviewing your asset selection. If capital preservation is your goal, this may be acceptable. Otherwise, assess whether low-performing positions are dragging returns."
+    else:
+        ret_text += "The portfolio is currently negative. This may reflect a challenging market environment or specific stock selection issues. "
+        ret_text += "Review which holdings are underperforming and assess whether the investment thesis still holds."
+
+    advisor_card("📈", "Return Analysis", ret_text, "#818cf8")
+
+    # ── 3. Risk Assessment ──
+    risk_text = f"<strong style='color:#f1f5f9 !important;'>Annualized volatility: {adv_ann_vol*100:.1f}%</strong> &bull; "
+    risk_text += f"<strong style='color:#f1f5f9 !important;'>Max drawdown: {adv_max_dd*100:.1f}%</strong> &bull; "
+    risk_text += f"<strong style='color:#f1f5f9 !important;'>Beta: {adv_beta:.2f}</strong><br><br>"
+
+    if adv_ann_vol > 0.25:
+        risk_text += "Volatility is <strong style='color:#f87171 !important;'>high</strong>. The portfolio experiences large daily swings. This level of volatility can lead to significant short-term losses and may not be suitable for risk-averse investors. "
+    elif adv_ann_vol > 0.15:
+        risk_text += "Volatility is <strong style='color:#fbbf24 !important;'>moderate</strong>, typical for a stock-heavy portfolio. "
+    else:
+        risk_text += "Volatility is <strong style='color:#34d399 !important;'>low</strong>, suggesting a conservative or well-hedged portfolio. "
+
+    if adv_beta > 1.3:
+        risk_text += f"With a beta of {adv_beta:.2f}, your portfolio amplifies market moves &mdash; it rises faster in bull markets but falls harder in downturns. "
+    elif adv_beta > 0.8:
+        risk_text += f"Beta of {adv_beta:.2f} indicates market-like sensitivity. "
+    else:
+        risk_text += f"Beta of {adv_beta:.2f} suggests defensive characteristics &mdash; less sensitive to broad market swings. "
+
+    risk_text += f"<br><br>The maximum drawdown of <strong style='color:#f1f5f9 !important;'>{adv_max_dd*100:.1f}%</strong> represents the worst peak-to-trough decline observed. "
+    if abs(adv_max_dd) > 0.30:
+        risk_text += "This is a significant drawdown. Consider whether you could tolerate a similar decline without panic-selling."
+    elif abs(adv_max_dd) > 0.15:
+        risk_text += "This is within normal bounds for equity portfolios but still represents meaningful pain during downturns."
+    else:
+        risk_text += "This is a relatively contained drawdown, suggesting good downside protection."
+
+    advisor_card("⚠️", "Risk Assessment", risk_text, "#f87171")
+
+    # ── 4. Diversification Review ──
+    div_text = f"<strong style='color:#f1f5f9 !important;'>Effective positions: {adv_n_eff:.1f}</strong> out of {len(adv_tickers)} holdings &bull; "
+    div_text += f"<strong style='color:#f1f5f9 !important;'>Largest position: {adv_max_weight_ticker} ({adv_max_weight*100:.1f}%)</strong><br><br>"
+
+    if adv_max_weight > 0.40:
+        div_text += f"<strong style='color:#f87171 !important;'>Warning:</strong> {adv_max_weight_ticker} represents {adv_max_weight*100:.0f}% of your portfolio. "
+        div_text += "A single position over 40% creates significant idiosyncratic risk. A negative event specific to this asset could severely impact your portfolio. "
+        div_text += "Consider trimming to reduce concentration."
+    elif adv_max_weight > 0.25:
+        div_text += f"{adv_max_weight_ticker} at {adv_max_weight*100:.0f}% is a sizable position. Monitor it closely and consider rebalancing if it grows further."
+    else:
+        div_text += "Position sizing looks balanced. No single holding dominates the portfolio excessively."
+
+    # Check for high correlations
+    high_corr_pairs = []
+    for i in range(len(adv_tickers)):
+        for j in range(i+1, len(adv_tickers)):
+            if adv_tickers[i] in adv_corr.columns and adv_tickers[j] in adv_corr.columns:
+                corr_val = adv_corr.loc[adv_tickers[i], adv_tickers[j]]
+                if abs(corr_val) > 0.8:
+                    high_corr_pairs.append((adv_tickers[i], adv_tickers[j], corr_val))
+
+    if high_corr_pairs:
+        div_text += "<br><br><strong style='color:#fbbf24 !important;'>Correlation alert:</strong> "
+        for t1, t2, cv in high_corr_pairs[:3]:
+            div_text += f"{t1}/{t2} ({cv:.2f}), "
+        div_text = div_text.rstrip(", ")
+        div_text += " have high correlation (&gt;0.8). These positions move together and provide limited diversification benefit. "
+        div_text += "Consider substituting one with an uncorrelated asset."
+    elif len(adv_tickers) > 1:
+        div_text += "<br><br>No highly correlated pairs detected (&gt;0.8). The holdings provide good diversification benefit across different risk exposures."
+
+    advisor_card("🎯", "Diversification Review", div_text, "#fbbf24")
+
+    # ── 5. Risk-Adjusted Performance ──
+    perf_text = f"<strong style='color:#f1f5f9 !important;'>Sharpe: {adv_sharpe:.2f}</strong> &bull; "
+    perf_text += f"<strong style='color:#f1f5f9 !important;'>Sortino: {adv_sortino:.2f}</strong> &bull; "
+    perf_text += f"<strong style='color:#f1f5f9 !important;'>Alpha: {adv_alpha*100:+.2f}%</strong><br><br>"
+
+    if adv_sharpe >= 1.0:
+        perf_text += "A Sharpe ratio above 1.0 is considered very good &mdash; you're earning strong returns per unit of risk taken. "
+    elif adv_sharpe >= 0.5:
+        perf_text += "A Sharpe ratio between 0.5&ndash;1.0 is acceptable but suggests room for improvement. "
+    else:
+        perf_text += "A Sharpe below 0.5 indicates poor compensation for the risk being taken. The same return could potentially be achieved with less volatility. "
+
+    if adv_sortino > adv_sharpe:
+        perf_text += f"The Sortino ratio ({adv_sortino:.2f}) is higher than the Sharpe ({adv_sharpe:.2f}), which means most of your volatility is on the upside &mdash; a positive sign. "
+    elif adv_sortino < adv_sharpe * 0.8:
+        perf_text += f"The Sortino ({adv_sortino:.2f}) being lower than Sharpe ({adv_sharpe:.2f}) suggests meaningful downside volatility. Your losses tend to be outsized relative to gains."
+
+    if adv_alpha > 0.02:
+        perf_text += f"<br><br>Alpha of {adv_alpha*100:+.2f}% indicates the portfolio is generating excess returns beyond what the benchmark (SPY) provides for the level of risk. This is the hallmark of good stock selection."
+    elif adv_alpha > -0.02:
+        perf_text += f"<br><br>Alpha near zero ({adv_alpha*100:+.2f}%) means the portfolio is performing roughly as expected given its risk exposure. Consider whether the added complexity over a simple index fund is justified."
+    else:
+        perf_text += f"<br><br>Negative alpha ({adv_alpha*100:+.2f}%) means the portfolio is underperforming on a risk-adjusted basis versus SPY. A simple index fund would have delivered better results for the same risk."
+
+    advisor_card("📊", "Risk-Adjusted Performance", perf_text, "#34d399")
+
+    # ── 6. Tail Risk & Downside ──
+    tail_text = f"<strong style='color:#f1f5f9 !important;'>VaR (95%): {adv_var_95*100:.2f}%</strong> &bull; "
+    tail_text += f"<strong style='color:#f1f5f9 !important;'>CVaR (95%): {adv_cvar_95*100:.2f}%</strong> &bull; "
+    tail_text += f"<strong style='color:#f1f5f9 !important;'>Win rate: {adv_win_rate:.1f}%</strong><br><br>"
+
+    tail_text += f"On a typical bad day (95% confidence), you could lose up to <strong style='color:#f87171 !important;'>{adv_var_95*100:.2f}%</strong> of portfolio value. "
+    tail_text += f"In extreme scenarios (worst 5% of days), the average loss would be <strong style='color:#f87171 !important;'>{adv_cvar_95*100:.2f}%</strong>. "
+
+    portfolio_val = st.session_state.total_value
+    dollar_var = portfolio_val * adv_var_95
+    dollar_cvar = portfolio_val * adv_cvar_95
+    tail_text += f"<br><br>In dollar terms on a ${portfolio_val:,.0f} portfolio: a bad day could cost ~<strong style='color:#f1f5f9 !important;'>${dollar_var:,.0f}</strong>, "
+    tail_text += f"and a worst-case day ~<strong style='color:#f1f5f9 !important;'>${dollar_cvar:,.0f}</strong>. "
+
+    if adv_win_rate > 55:
+        tail_text += f"<br><br>With a win rate of {adv_win_rate:.1f}%, the portfolio has more positive days than negative &mdash; a sign of consistent performance."
+    elif adv_win_rate > 48:
+        tail_text += f"<br><br>Win rate of {adv_win_rate:.1f}% is near 50/50. Profitability depends on the magnitude of gains exceeding losses, not frequency."
+    else:
+        tail_text += f"<br><br>Win rate below 50% ({adv_win_rate:.1f}%) means more losing days than winning. The portfolio relies on larger gains to offset frequent small losses."
+
+    advisor_card("🛡️", "Tail Risk & Downside Protection", tail_text, "#c084fc")
+
+    # ── 7. Actionable Suggestions ──
+    suggestions = []
+
+    if adv_max_weight > 0.35:
+        suggestions.append(f"<strong style='color:#f1f5f9 !important;'>Reduce concentration:</strong> {adv_max_weight_ticker} at {adv_max_weight*100:.0f}% is oversized. Consider trimming to under 25% and reallocating to uncorrelated assets.")
+
+    if abs(adv_max_dd) > 0.25:
+        suggestions.append("<strong style='color:#f1f5f9 !important;'>Add downside protection:</strong> The portfolio has experienced a significant drawdown. Consider adding defensive positions (bonds, gold, low-beta stocks) or using stop-loss strategies.")
+
+    if adv_sharpe < 0.5:
+        suggestions.append("<strong style='color:#f1f5f9 !important;'>Improve risk-adjusted returns:</strong> The Sharpe ratio is below 0.5. Review underperforming holdings and consider replacing them with assets that offer better return per unit of risk.")
+
+    if adv_n_eff < 3 and len(adv_tickers) >= 3:
+        suggestions.append("<strong style='color:#f1f5f9 !important;'>Rebalance weights:</strong> Despite holding multiple assets, the effective diversification is low. Rebalancing toward equal weights would improve risk distribution.")
+
+    if adv_beta > 1.3:
+        suggestions.append("<strong style='color:#f1f5f9 !important;'>Lower market sensitivity:</strong> A beta above 1.3 means amplified exposure to market downturns. Consider adding low-beta or market-neutral positions.")
+
+    if adv_alpha < -0.02:
+        suggestions.append("<strong style='color:#f1f5f9 !important;'>Revisit stock selection:</strong> Negative alpha suggests underperformance vs. benchmark. Consider whether an index fund (SPY/VOO) would serve you better for the core allocation.")
+
+    if high_corr_pairs:
+        suggestions.append("<strong style='color:#f1f5f9 !important;'>Reduce correlated holdings:</strong> Some positions move in lockstep. Swap one correlated asset for something in a different sector or asset class (e.g., international, fixed income, commodities).")
+
+    if len(adv_tickers) < 5:
+        suggestions.append("<strong style='color:#f1f5f9 !important;'>Increase holdings count:</strong> With fewer than 5 positions, idiosyncratic risk is high. Adding 3&ndash;5 more uncorrelated positions could significantly reduce portfolio-specific risk.")
+
+    if not suggestions:
+        suggestions.append("Your portfolio metrics look well-balanced. Continue monitoring and rebalance periodically (quarterly or semi-annually) to maintain your target allocations.")
+
+    sugg_html = "<ol style='margin:0;padding-left:20px;'>"
+    for s in suggestions:
+        sugg_html += f"<li style='margin-bottom:10px;color:#cbd5e1 !important;'>{s}</li>"
+    sugg_html += "</ol>"
+
+    advisor_card("💡", "Actionable Suggestions", sugg_html, "#38bdf8")
+
+    # ── Metrics Summary Table ──
+    st.markdown("<div style='margin: 30px 0;'></div>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color: #f1f5f9 !important; margin-bottom: 20px;'>Metrics Summary</h3>", unsafe_allow_html=True)
+
+    metrics_summary = pd.DataFrame({
+        'Metric': ['Annualized Return', 'Annualized Volatility', 'Sharpe Ratio', 'Sortino Ratio',
+                    'Max Drawdown', 'Alpha', 'Beta', 'VaR (95%)', 'CVaR (95%)',
+                    'Effective Positions', 'Win Rate'],
+        'Value': [f"{adv_ann_return*100:.2f}%", f"{adv_ann_vol*100:.2f}%", f"{adv_sharpe:.2f}",
+                  f"{adv_sortino:.2f}", f"{adv_max_dd*100:.2f}%", f"{adv_alpha*100:+.2f}%",
+                  f"{adv_beta:.2f}", f"{adv_var_95*100:.2f}%", f"{adv_cvar_95*100:.2f}%",
+                  f"{adv_n_eff:.1f} / {len(adv_tickers)}", f"{adv_win_rate:.1f}%"],
+        'Assessment': [
+            "Strong" if adv_ann_return > 0.10 else "Moderate" if adv_ann_return > 0.04 else "Weak",
+            "Low" if adv_ann_vol < 0.15 else "Moderate" if adv_ann_vol < 0.25 else "High",
+            "Excellent" if adv_sharpe >= 1 else "Good" if adv_sharpe >= 0.5 else "Poor",
+            "Excellent" if adv_sortino >= 1 else "Good" if adv_sortino >= 0.5 else "Poor",
+            "Contained" if abs(adv_max_dd) < 0.15 else "Moderate" if abs(adv_max_dd) < 0.30 else "Severe",
+            "Outperforming" if adv_alpha > 0.01 else "Neutral" if adv_alpha > -0.01 else "Underperforming",
+            "Defensive" if adv_beta < 0.8 else "Market-like" if adv_beta < 1.2 else "Aggressive",
+            "Low" if adv_var_95 < 0.015 else "Moderate" if adv_var_95 < 0.025 else "High",
+            "Low" if adv_cvar_95 < 0.02 else "Moderate" if adv_cvar_95 < 0.035 else "High",
+            "Well Diversified" if adv_n_eff >= len(adv_tickers) * 0.6 else "Concentrated",
+            "Strong" if adv_win_rate > 54 else "Average" if adv_win_rate > 48 else "Below Average",
+        ]
+    })
+
+    st.dataframe(metrics_summary, use_container_width=True, hide_index=True)
+
+    # ── Disclaimer ──
+    st.markdown("""
+        <div style='background: rgba(248,113,113,0.06); padding: 20px 24px; border-radius: 12px;
+                    border: 1px solid rgba(248,113,113,0.15); margin-top: 40px;'>
+            <p style='color: #f87171 !important; font-size: 13px; font-weight: 700; margin: 0 0 8px 0;
+                      text-transform: uppercase; letter-spacing: .5px;'>
+                ⚠️ Important Disclaimer
+            </p>
+            <p style='color: #cbd5e1 !important; font-size: 13px; line-height: 1.8; margin: 0;'>
+                This analysis is generated automatically using quantitative metrics and rule-based logic.
+                It is intended <strong style='color:#f1f5f9 !important;'>purely for educational and research purposes</strong> and does
+                <strong style='color:#f87171 !important;'>not constitute financial advice</strong>.
+                Past performance does not guarantee future results. All investments carry risk, including the
+                potential loss of principal. Consult a licensed financial advisor before making any investment decisions.
+                The creators of this tool accept no liability for any actions taken based on this analysis.
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
 
 # ============================================================================
 # FOOTER
