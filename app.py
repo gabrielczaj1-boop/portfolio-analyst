@@ -1587,10 +1587,11 @@ with tab_news:
         # Show article count
         st.markdown(f"<p style='color: #64748b !important; font-size: 13px; margin-bottom: 20px;'>{len(news_articles)} article{'s' if len(news_articles) != 1 else ''} found</p>", unsafe_allow_html=True)
 
+        from datetime import datetime, timezone
+        now_utc = datetime.now(tz=timezone.utc)
+
         for article in news_articles:
-            from datetime import datetime, timezone
             # Time ago calculation
-            now_utc = datetime.now(tz=timezone.utc)
             delta = now_utc - article["published"]
             if delta.days > 0:
                 time_ago = f"{delta.days}d ago"
@@ -1599,50 +1600,53 @@ with tab_news:
             else:
                 time_ago = f"{max(1, delta.seconds // 60)}m ago"
 
-            # Thumbnail HTML
+            # Build summary snippet
+            summary_html = ""
+            if article.get("summary"):
+                summary_html = (
+                    "<p style='color: #94a3b8 !important; font-size: 13px; margin: 0 0 8px 0; "
+                    "line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; "
+                    "-webkit-box-orient: vertical; overflow: hidden;'>"
+                    + article["summary"] + "</p>"
+                )
+
+            # Build thumbnail
             thumb_html = ""
-            if article["thumbnail"]:
-                thumb_html = f"""
-                    <div style='flex-shrink: 0; width: 140px; height: 90px; border-radius: 8px; overflow: hidden;
-                                margin-left: 20px;'>
-                        <img src="{article['thumbnail']}" 
-                             style='width: 100%; height: 100%; object-fit: cover;'
-                             onerror="this.parentElement.style.display='none';" />
-                    </div>
-                """
+            if article.get("thumbnail"):
+                thumb_url = article["thumbnail"]
+                thumb_html = (
+                    "<div style='flex-shrink:0;width:120px;height:80px;border-radius:8px;"
+                    "overflow:hidden;margin-left:16px;'>"
+                    "<img src='" + thumb_url + "' "
+                    "style='width:100%;height:100%;object-fit:cover;' />"
+                    "</div>"
+                )
 
-            # Ticker badge
-            badge = f"""<span style='background: rgba(129,140,248,0.15); color: #818cf8 !important;
-                                     padding: 2px 8px; border-radius: 4px; font-size: 11px;
-                                     font-weight: 600; letter-spacing: .3px;'>{article['source_ticker']}</span>"""
+            # Build full card HTML as a single string
+            card_html = (
+                "<a href='" + article["link"] + "' target='_blank' style='text-decoration:none;display:block;'>"
+                "<div style='background:rgba(30,41,59,0.65);padding:20px 24px;border-radius:12px;"
+                "border:1px solid rgba(148,163,184,0.08);margin-bottom:12px;"
+                "backdrop-filter:blur(12px);display:flex;align-items:center;cursor:pointer;'>"
+                "<div style='flex:1;min-width:0;'>"
+                "<p style='color:#f1f5f9 !important;font-size:15px;font-weight:600;margin:0 0 6px 0;"
+                "line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;"
+                "-webkit-box-orient:vertical;overflow:hidden;'>"
+                + article["title"] + "</p>"
+                + summary_html
+                + "<div style='display:flex;align-items:center;gap:10px;flex-wrap:wrap;'>"
+                "<span style='background:rgba(129,140,248,0.15);color:#818cf8 !important;"
+                "padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;"
+                "letter-spacing:.3px;'>" + article["source_ticker"] + "</span>"
+                "<span style='color:#64748b !important;font-size:12px;'>" + article["publisher"] + "</span>"
+                "<span style='color:#475569 !important;font-size:12px;'>&bull;</span>"
+                "<span style='color:#64748b !important;font-size:12px;'>" + time_ago + "</span>"
+                "</div></div>"
+                + thumb_html
+                + "</div></a>"
+            )
 
-            st.markdown(f"""
-                <a href="{article['link']}" target="_blank" style='text-decoration: none; display: block;'>
-                    <div style='background: rgba(30,41,59,0.65); padding: 20px 24px; border-radius: 12px;
-                                border: 1px solid rgba(148,163,184,0.08); margin-bottom: 12px;
-                                backdrop-filter: blur(12px); display: flex; align-items: center;
-                                transition: border-color 0.2s, background 0.2s;
-                                cursor: pointer;'
-                         onmouseover="this.style.borderColor='rgba(129,140,248,0.3)'; this.style.background='rgba(30,41,59,0.85)';"
-                         onmouseout="this.style.borderColor='rgba(148,163,184,0.08)'; this.style.background='rgba(30,41,59,0.65)';">
-                        <div style='flex: 1; min-width: 0;'>
-                            <p style='color: #f1f5f9 !important; font-size: 15px; font-weight: 600; margin: 0 0 6px 0;
-                                      line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2;
-                                      -webkit-box-orient: vertical; overflow: hidden;'>
-                                {article['title']}
-                            </p>
-                            {"<p style='color: #94a3b8 !important; font-size: 13px; margin: 0 0 8px 0; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;'>" + article['summary'] + "</p>" if article.get('summary') else ""}
-                            <div style='display: flex; align-items: center; gap: 10px; flex-wrap: wrap;'>
-                                {badge}
-                                <span style='color: #64748b !important; font-size: 12px;'>{article['publisher']}</span>
-                                <span style='color: #475569 !important; font-size: 12px;'>&bull;</span>
-                                <span style='color: #64748b !important; font-size: 12px;'>{time_ago}</span>
-                            </div>
-                        </div>
-                        {thumb_html}
-                    </div>
-                </a>
-            """, unsafe_allow_html=True)
+            st.markdown(card_html, unsafe_allow_html=True)
 
         # Footer note
         st.markdown("""
