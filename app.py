@@ -40,7 +40,7 @@ if 'holdings_df' not in st.session_state:
         'Buy Date': [pd.NaT, pd.NaT, pd.NaT, pd.NaT],
     })
 if 'benchmark' not in st.session_state:
-    st.session_state.benchmark = '^GSPC'
+    st.session_state.benchmark = 'SPY'
 
 # ============================================================================
 # MAIN APP - HEADER
@@ -262,7 +262,7 @@ with tab0:
         st.session_state.current_prices = current_prices
         st.session_state.position_values = position_values
         st.session_state.total_value = total_value
-        st.session_state.benchmark = '^GSPC'  # Default to S&P 500
+        st.session_state.benchmark = 'SPY'  # Default to S&P 500
         st.session_state.portfolio_configured = True
         
         st.success("✅ Portfolio configured successfully! Switch to other tabs to view analysis.")
