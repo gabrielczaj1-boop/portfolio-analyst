@@ -1509,14 +1509,15 @@ with tab4:
     adv_alpha, adv_beta = de.calculate_alpha_beta(portfolio_returns, benchmark_returns)
     adv_var_95 = de.calculate_var(portfolio_returns, confidence=0.95)
     adv_cvar_95 = de.calculate_cvar(portfolio_returns, confidence=0.95)
-    adv_weights = st.session_state.weights
-    adv_tickers = st.session_state.tickers
+    adv_weights = list(st.session_state.weights)
+    adv_tickers = list(st.session_state.tickers)
     adv_weights_sq = sum([w**2 for w in adv_weights])
     adv_n_eff = 1 / adv_weights_sq if adv_weights_sq > 0 else len(adv_weights)
     adv_corr = de.calculate_correlation_matrix(returns_df)
     adv_win_rate = (portfolio_returns > 0).sum() / len(portfolio_returns) * 100 if len(portfolio_returns) > 0 else 0
     adv_max_weight = max(adv_weights)
-    adv_max_weight_ticker = adv_tickers[adv_weights.index(adv_max_weight)]
+    adv_max_weight_idx = adv_weights.index(adv_max_weight)
+    adv_max_weight_ticker = adv_tickers[adv_max_weight_idx]
 
     # ── Build advisory sections ──
 
