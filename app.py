@@ -1405,8 +1405,8 @@ with tab3:
     # Button-style time period selector
     asset_time_period = st.radio(
         "Asset Time Period",
-        options=["1M", "3M", "6M", "YTD", "1Y", "3Y", "5Y", "ALL"],
-        index=4,  # Default to 1Y
+        options=["3M", "6M", "YTD", "1Y", "3Y", "5Y", "ALL"],
+        index=3,  # Default to 1Y
         horizontal=True,
         label_visibility="collapsed",
         key="asset_time_period"
@@ -1414,9 +1414,7 @@ with tab3:
     
     # Calculate date range based on selection
     asset_end_date = returns_df.index[-1]
-    if asset_time_period == "1M":
-        asset_start_date = asset_end_date - pd.Timedelta(days=30)
-    elif asset_time_period == "3M":
+    if asset_time_period == "3M":
         asset_start_date = asset_end_date - pd.Timedelta(days=90)
     elif asset_time_period == "6M":
         asset_start_date = asset_end_date - pd.Timedelta(days=180)
