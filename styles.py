@@ -48,6 +48,7 @@ def formula_card(label: str, value: str, formula_html: str, delta: str = "") -> 
 <style>
 #{uid} {{
     position: relative;
+    z-index: 1;
     background: {BG_CARD};
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -55,9 +56,10 @@ def formula_card(label: str, value: str, formula_html: str, delta: str = "") -> 
     border-radius: 12px;
     border: 1px solid {BORDER};
     cursor: default;
-    transition: box-shadow .25s ease, border-color .25s ease;
+    transition: box-shadow .25s ease, border-color .25s ease, z-index 0s;
 }}
 #{uid}:hover {{
+    z-index: 999999;
     box-shadow: 0 0 24px rgba(99,102,241,0.15);
     border-color: rgba(129,140,248,0.35);
 }}
@@ -114,13 +116,23 @@ def apply_global_styles() -> None:
             background-color: {BG_PRIMARY} !important;
         }}
 
-        /* Let formula tooltips escape column/container boundaries */
+        /* Let formula tooltips escape column/container boundaries.
+           overflow:visible lets the tooltip extend beyond the box;
+           isolation/contain/transform resets prevent new stacking contexts
+           so z-index on the card can beat neighboring columns. */
         [data-testid="column"],
         [data-testid="stVerticalBlock"],
+        [data-testid="stVerticalBlockBorderWrapper"],
         [data-testid="stHorizontalBlock"],
         .stColumn,
-        .element-container {{
+        .element-container,
+        [data-testid="stElementContainer"] {{
             overflow: visible !important;
+            isolation: auto !important;
+            contain: none !important;
+            transform: none !important;
+            will-change: auto !important;
+            z-index: auto !important;
         }}
 
         .block-container {{
