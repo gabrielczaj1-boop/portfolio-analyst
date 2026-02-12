@@ -443,11 +443,8 @@ def apply_global_styles() -> None:
             border: none !important;
             box-shadow: none !important;
         }}
-        div[data-testid="stRadio"] div[role="radiogroup"] label div[data-baseweb="radio"] {{
-            display: none !important;
-        }}
-        div[data-testid="stRadio"] [data-baseweb="radio"] span,
-        div[data-testid="stRadio"] [data-baseweb="radio"] div {{
+        /* Hide only the radio circle indicator, not the label text */
+        div[data-testid="stRadio"] div[role="radiogroup"] label div[data-baseweb="radio"] > div:first-child {{
             display: none !important;
         }}
 
