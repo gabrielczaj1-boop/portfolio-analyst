@@ -421,6 +421,14 @@ def apply_global_styles() -> None:
             color: white !important;
             box-shadow: 0 2px 8px rgba(99,102,241,0.35);
         }}
+        div[data-testid="stRadio"] > div[role="radiogroup"] > label[data-checked="true"] p,
+        div[data-testid="stRadio"] > div[role="radiogroup"] > label[data-checked="true"] span,
+        div[data-testid="stRadio"] > div[role="radiogroup"] > label[data-checked="true"] div,
+        div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) p,
+        div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) span,
+        div[data-testid="stRadio"] > div[role="radiogroup"] > label:has(input:checked) div {{
+            color: white !important;
+        }}
         div[data-testid="stRadio"] input[type="radio"] {{
             position: absolute;
             opacity: 0;
