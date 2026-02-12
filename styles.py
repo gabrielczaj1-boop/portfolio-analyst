@@ -252,11 +252,23 @@ def apply_global_styles() -> None:
         .element-container, .element-container p, .element-container span {{
             color: {TEXT_SECONDARY} !important;
         }}
-        /* Green/red color overrides for gain/loss text */
-        .gain-green, .gain-green p, .gain-green span, .gain-green div {{
+        /* Green/red color overrides for gain/loss text — high specificity to beat container rules */
+        [data-testid="stMarkdownContainer"] .gain-green,
+        [data-testid="stMarkdownContainer"] p.gain-green,
+        [data-testid="stMarkdownContainer"] div.gain-green,
+        [data-testid="stMarkdownContainer"] span.gain-green,
+        .stMarkdown .gain-green,
+        .element-container .gain-green,
+        .gain-green {{
             color: #00e676 !important;
         }}
-        .loss-red, .loss-red p, .loss-red span, .loss-red div {{
+        [data-testid="stMarkdownContainer"] .loss-red,
+        [data-testid="stMarkdownContainer"] p.loss-red,
+        [data-testid="stMarkdownContainer"] div.loss-red,
+        [data-testid="stMarkdownContainer"] span.loss-red,
+        .stMarkdown .loss-red,
+        .element-container .loss-red,
+        .loss-red {{
             color: #ff1744 !important;
         }}
         strong, b {{
