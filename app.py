@@ -173,7 +173,7 @@ with tab0:
                     border: 1px solid rgba(148,163,184,0.12); margin-bottom: 24px;
                     backdrop-filter: blur(12px);'>
             <p style='color: #f1f5f9 !important; font-size: 16px; font-weight: 600; margin: 0 0 14px 0;'>
-                ✏️ Enter your holdings below
+                Enter your holdings below
             </p>
             <p style='color: #94a3b8 !important; font-size: 13px; line-height: 1.8; margin: 0;'>
                 Click on any cell to edit. Use the <strong style='color: #e2e8f0 !important;'>+ button</strong> at the bottom to add more rows.<br>
@@ -192,13 +192,13 @@ with tab0:
         use_container_width=True,
         column_config={
             "Ticker": st.column_config.TextColumn(
-                "📌 Ticker",
+                "Ticker",
                 help="Stock or crypto symbol (e.g., AAPL, MSFT, BTC-USD)",
                 required=True,
                 default="",
             ),
             "Shares": st.column_config.NumberColumn(
-                "📊 Shares",
+                "Shares",
                 help="Number of shares you own",
                 min_value=0.0,
                 required=True,
@@ -206,13 +206,13 @@ with tab0:
                 default=0.0,
             ),
             "Cost Basis (Optional)": st.column_config.NumberColumn(
-                "💰 Cost Basis",
+                "Cost Basis",
                 help="Your average purchase price per share (optional, for P&L)",
                 min_value=0.0,
                 format="$%.2f",
             ),
             "Buy Date": st.column_config.DatetimeColumn(
-                 "📅 Buy Date",
+                 "Buy Date",
                  help="Optional: date you first bought this position (used for since-buy-date performance)",
             ),
         },
