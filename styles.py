@@ -427,6 +427,29 @@ def apply_global_styles() -> None:
             width: 0;
             height: 0;
         }}
+        /* Kill Streamlit default radio focus rings and red accents */
+        div[data-testid="stRadio"] label div[data-testid="stMarkdownContainer"] p {{
+            color: inherit !important;
+        }}
+        div[data-testid="stRadio"] label {{
+            outline: none !important;
+            border: none !important;
+            box-shadow: none !important;
+        }}
+        div[data-testid="stRadio"] label:focus,
+        div[data-testid="stRadio"] label:focus-within,
+        div[data-testid="stRadio"] label:focus-visible {{
+            outline: none !important;
+            border: none !important;
+            box-shadow: none !important;
+        }}
+        div[data-testid="stRadio"] div[role="radiogroup"] label div[data-baseweb="radio"] {{
+            display: none !important;
+        }}
+        div[data-testid="stRadio"] [data-baseweb="radio"] span,
+        div[data-testid="stRadio"] [data-baseweb="radio"] div {{
+            display: none !important;
+        }}
 
         /* ── Dividers ── */
         hr {{
