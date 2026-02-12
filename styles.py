@@ -252,6 +252,13 @@ def apply_global_styles() -> None:
         .element-container, .element-container p, .element-container span {{
             color: {TEXT_SECONDARY} !important;
         }}
+        /* Green/red color overrides for gain/loss text */
+        .gain-green, .gain-green p, .gain-green span, .gain-green div {{
+            color: #00e676 !important;
+        }}
+        .loss-red, .loss-red p, .loss-red span, .loss-red div {{
+            color: #ff1744 !important;
+        }}
         strong, b {{
             color: {TEXT_PRIMARY} !important;
         }}

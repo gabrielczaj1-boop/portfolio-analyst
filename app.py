@@ -544,16 +544,16 @@ with tab1:
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        change_color = "#00e676" if todays_change_dollar >= 0 else "#ff1744"
+        change_class = "gain-green" if todays_change_dollar >= 0 else "loss-red"
         change_arrow = "▲" if todays_change_dollar >= 0 else "▼"
         st.markdown(f"""
             <div style='background: rgba(30,41,59,0.65); padding: 20px 25px; border-radius: 12px; 
                         border: 1px solid rgba(148,163,184,0.12); backdrop-filter: blur(12px);'>
                 <p style='color: #94a3b8 !important; font-size: 13px; margin: 0 0 8px 0; font-weight: 500;'>Today's Change</p>
-                <p style='color: {change_color} !important; font-size: 24px; margin: 0; font-weight: 600;'>
+                <p class='{change_class}' style='font-size: 24px; margin: 0; font-weight: 600;'>
                     {change_arrow} ${abs(todays_change_dollar):,.2f}
                 </p>
-                <p style='color: {change_color} !important; font-size: 14px; margin: 4px 0 0 0;'>
+                <p class='{change_class}' style='font-size: 14px; margin: 4px 0 0 0;'>
                     {'+' if todays_change_pct >= 0 else ''}{todays_change_pct:.2f}%
                 </p>
             </div>
@@ -561,16 +561,16 @@ with tab1:
     
     with col2:
         if total_gain is not None:
-            gain_color = "#00e676" if total_gain >= 0 else "#ff1744"
+            gain_class = "gain-green" if total_gain >= 0 else "loss-red"
             gain_arrow = "▲" if total_gain >= 0 else "▼"
             st.markdown(f"""
                 <div style='background: rgba(30,41,59,0.65); padding: 20px 25px; border-radius: 12px; 
                             border: 1px solid rgba(148,163,184,0.12); backdrop-filter: blur(12px);'>
                     <p style='color: #94a3b8 !important; font-size: 13px; margin: 0 0 8px 0; font-weight: 500;'>Total Gain/Loss</p>
-                    <p style='color: {gain_color} !important; font-size: 24px; margin: 0; font-weight: 600;'>
+                    <p class='{gain_class}' style='font-size: 24px; margin: 0; font-weight: 600;'>
                         {gain_arrow} ${abs(total_gain):,.2f}
                     </p>
-                    <p style='color: {gain_color} !important; font-size: 14px; margin: 4px 0 0 0;'>
+                    <p class='{gain_class}' style='font-size: 14px; margin: 4px 0 0 0;'>
                         {'+' if total_gain_pct >= 0 else ''}{total_gain_pct:.2f}%
                     </p>
                 </div>
