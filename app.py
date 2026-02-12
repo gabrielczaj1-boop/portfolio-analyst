@@ -34,10 +34,10 @@ if 'portfolio_configured' not in st.session_state:
     st.session_state.portfolio_configured = False
 if 'holdings_df' not in st.session_state:
     st.session_state.holdings_df = pd.DataFrame({
-        'Ticker': ['AAPL', 'MSFT', 'TSLA', 'BTC-USD'],
-        'Shares': [10.0, 15.0, 5.0, 0.5],
-        'Cost Basis (Optional)': [150.0, 280.0, 200.0, 35000.0],
-        'Buy Date': [pd.NaT, pd.NaT, pd.NaT, pd.NaT],
+        'Ticker': ['', '', ''],
+        'Shares': [0.0, 0.0, 0.0],
+        'Cost Basis (Optional)': [None, None, None],
+        'Buy Date': [pd.NaT, pd.NaT, pd.NaT],
     })
 if 'benchmark' not in st.session_state:
     st.session_state.benchmark = 'SPY'
@@ -169,10 +169,19 @@ with tab0:
     st.markdown("<div style='margin: 25px 0 15px 0;'><hr style='border: none; border-top: 1px solid rgba(148,163,184,0.12);'></div>", unsafe_allow_html=True)
     
     st.markdown("""
-        <div style='color: #94a3b8 !important; font-size: 15px; line-height: 2; margin-bottom: 20px;'>
-            <p style='margin: 8px 0; color: #94a3b8 !important;'><strong style='color: #e2e8f0 !important;'>Ticker</strong> — Stock or crypto symbol (e.g., AAPL, BTC-USD)</p>
-            <p style='margin: 8px 0; color: #94a3b8 !important;'><strong style='color: #e2e8f0 !important;'>Shares</strong> — How many shares you own</p>
-            <p style='margin: 8px 0; color: #94a3b8 !important;'><strong style='color: #e2e8f0 !important;'>Cost Basis</strong> — Optional: Your average purchase price (for P&L calculation)</p>
+        <div style='background: rgba(30,41,59,0.65); padding: 24px 28px; border-radius: 12px;
+                    border: 1px solid rgba(148,163,184,0.12); margin-bottom: 24px;
+                    backdrop-filter: blur(12px);'>
+            <p style='color: #f1f5f9 !important; font-size: 16px; font-weight: 600; margin: 0 0 14px 0;'>
+                ✏️ Enter your holdings below
+            </p>
+            <p style='color: #94a3b8 !important; font-size: 13px; line-height: 1.8; margin: 0;'>
+                Click on any cell to edit. Use the <strong style='color: #e2e8f0 !important;'>+ button</strong> at the bottom to add more rows.<br>
+                <strong style='color: #818cf8 !important;'>Ticker</strong> — Stock or crypto symbol (e.g. AAPL, MSFT, BTC-USD) &nbsp;&nbsp;
+                <strong style='color: #818cf8 !important;'>Shares</strong> — Number of shares you own &nbsp;&nbsp;
+                <strong style='color: #818cf8 !important;'>Cost Basis</strong> — Optional: avg purchase price &nbsp;&nbsp;
+                <strong style='color: #818cf8 !important;'>Buy Date</strong> — Optional: date purchased
+            </p>
         </div>
     """, unsafe_allow_html=True)
     
@@ -183,25 +192,27 @@ with tab0:
         use_container_width=True,
         column_config={
             "Ticker": st.column_config.TextColumn(
-                "Ticker",
+                "📌 Ticker",
                 help="Stock or crypto symbol (e.g., AAPL, MSFT, BTC-USD)",
                 required=True,
+                default="",
             ),
             "Shares": st.column_config.NumberColumn(
-                "Shares",
+                "📊 Shares",
                 help="Number of shares you own",
                 min_value=0.0,
                 required=True,
-                format="%.4f"
+                format="%.4f",
+                default=0.0,
             ),
             "Cost Basis (Optional)": st.column_config.NumberColumn(
-                "Cost Basis (Optional)",
+                "💰 Cost Basis",
                 help="Your average purchase price per share (optional, for P&L)",
                 min_value=0.0,
-                format="$%.2f"
+                format="$%.2f",
             ),
             "Buy Date": st.column_config.DatetimeColumn(
-                 "Buy Date",
+                 "📅 Buy Date",
                  help="Optional: date you first bought this position (used for since-buy-date performance)",
             ),
         },
