@@ -901,13 +901,32 @@ with tab1:
             _row(t, f"{w*100:.1f}%")
             for t, w in zip(st.session_state.tickers, st.session_state.weights)
         )
+        n_total = len(st.session_state.tickers)
+        if effective_positions >= n_total * 0.8:
+            div_rating = "Excellent"
+            div_color = "#00e676"
+        elif effective_positions >= n_total * 0.6:
+            div_rating = "Good"
+            div_color = "#34d399"
+        elif effective_positions >= n_total * 0.3:
+            div_rating = "Moderate"
+            div_color = "#fbbf24"
+        else:
+            div_rating = "Concentrated"
+            div_color = "#f87171"
+
         st.markdown(_fc(
             "Diversification", f"{effective_positions:.1f}",
             math_formula(m("N<sub>eff</sub>"), mop("="), math_frac("1", "&Sigma; w<sub>i</sub>&sup2;"))
             + wt_lines
             + _row("&Sigma; w<sub>i</sub>&sup2;", f"{weights_squared:.4f}")
             + f"<hr style='{S_DIV}'>"
-            + _result("= Effective Positions", f"{effective_positions:.2f} / {len(st.session_state.tickers)}")
+            + _result("= Effective Positions", f"{effective_positions:.2f} / {n_total}")
+            + f"<p style='color:{div_color} !important;font-size:12px;font-weight:600;margin:8px 0 0 0;'>{div_rating}</p>"
+            + f"<p style='{S_NOTE}'>Measures how evenly your capital is spread. "
+            + f"A score close to {n_total} (your total holdings) means well-balanced weights. "
+            + "A low score means a few positions dominate. "
+            + "Aim for at least 60% of your total holdings count.</p>"
         ), unsafe_allow_html=True)
     
     st.markdown("<div style='margin: 40px 0;'></div>", unsafe_allow_html=True)
