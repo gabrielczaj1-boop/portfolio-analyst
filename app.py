@@ -1619,14 +1619,27 @@ with tab_news:
         with sort_col1:
             st.markdown("<p style='color: #94a3b8 !important; font-size: 12px; font-weight: 600; margin: 0 0 4px 0; letter-spacing: .3px;'>Sort By:</p>", unsafe_allow_html=True)
             news_sort = st.radio("Sort by", ["Most Recent", "Ticker"], key="news_sort", horizontal=True, label_visibility="collapsed")
-        with sort_col2:
-            st.markdown(f"<p style='color: #64748b !important; font-size: 13px; margin-top: 24px; text-align: right;'>{len(news_articles)} article{'s' if len(news_articles) != 1 else ''} found</p>", unsafe_allow_html=True)
 
-        # Apply sorting
-        if news_sort == "Ticker":
-            ticker_order = {t: i for i, t in enumerate(tickers)}
-            news_articles = sorted(news_articles, key=lambda a: (ticker_order.get(a["source_ticker"], 999), -a["published"].timestamp()))
-        # else already sorted by most recent from fetch
+            selected_ticker = "All"
+            if news_sort == "Ticker":
+                selected_ticker = st.selectbox(
+                    "Ticker",
+                    options=["All", *tickers],
+                    key="news_ticker_filter",
+                    label_visibility="collapsed",
+                )
+
+        # Apply filtering + sorting
+        filtered_news_articles = news_articles
+        if news_sort == "Ticker" and selected_ticker != "All":
+            filtered_news_articles = [a for a in news_articles if a.get("source_ticker") == selected_ticker]
+        # (fetch_portfolio_news already sorts by Most Recent)
+
+        with sort_col2:
+            st.markdown(
+                f"<p style='color: #64748b !important; font-size: 13px; margin-top: 24px; text-align: right;'>{len(filtered_news_articles)} article{'s' if len(filtered_news_articles) != 1 else ''} found</p>",
+                unsafe_allow_html=True,
+            )
 
         from datetime import datetime, timezone
         now_utc = datetime.now(tz=timezone.utc)
@@ -1646,7 +1659,7 @@ with tab_news:
             except Exception:
                 ticker_day_colors[tk] = "#818cf8"
 
-        for article in news_articles:
+        for article in filtered_news_articles:
             # Time ago calculation
             delta = now_utc - article["published"]
             if delta.days > 0:

@@ -231,6 +231,3 @@ This project is open-source and available for educational use.
 
 ---
 
-**Built with ❤️ by a Quant Developer**
-#   p o r t f o l i o - a n a l y s t  
- 

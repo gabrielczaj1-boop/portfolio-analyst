@@ -44,9 +44,12 @@ Thumbs.db
 .env
 .env.local
 
-# Data files (if you add CSV exports)
+# Data / uploads (keep off GitHub)
 *.csv
-!sample_broker_export.csv
+*.tsv
+*.xlsx
+*.xls
+uploads/
 data/
 
 # Logs
